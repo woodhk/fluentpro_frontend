@@ -160,6 +160,7 @@ export default function SignInScreen() {
 
             {/* Sign In Button */}
             <LoadingButton
+              className="bg-primary-600 text-white items-center py-4 mx-10 rounded-3xl"
               title="Sign In"
               onPress={handleSubmit}
               loading={loading}

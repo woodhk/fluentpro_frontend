@@ -231,6 +231,7 @@ export default function SignUpScreen() {
 
             {/* Sign Up Button */}
             <LoadingButton
+              className="bg-primary-600 text-white items-center py-4 mx-10 rounded-3xl"
               title="Create Account"
               onPress={handleSubmit}
               loading={loading}
