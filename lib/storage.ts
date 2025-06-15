@@ -1,32 +1,28 @@
 // lib/storage.ts
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as Keychain from 'react-native-keychain';
+import * as SecureStore from 'expo-secure-store';
 import { User } from './types';
 
 const STORAGE_KEYS = {
-  AUTH_TOKEN: '@fluentpro/auth_token', // Fallback to AsyncStorage
+  AUTH_TOKEN: 'fluentpro_auth_token', // For SecureStore (no @ prefix needed)
   USER_DATA: '@fluentpro/user_data',
   ONBOARDING_STATUS: '@fluentpro/onboarding_status',
 } as const;
 
-const KEYCHAIN_SERVICE = 'FluentPro';
-
 export const storage = {
   /**
-   * Store authentication token securely using Keychain with AsyncStorage fallback
+   * Store authentication token securely using Expo SecureStore
    */
   async setAuthToken(token: string): Promise<void> {
     try {
-      // Try Keychain first (more secure)
-      await Keychain.setGenericPassword('auth_token', token, {
-        service: KEYCHAIN_SERVICE,
-      });
-      console.log('Token stored in Keychain successfully');
-    } catch (keychainError) {
-      console.warn('Keychain failed, falling back to AsyncStorage:', keychainError);
+      // Use Expo SecureStore for secure token storage
+      await SecureStore.setItemAsync(STORAGE_KEYS.AUTH_TOKEN, token);
+      console.log('Token stored in SecureStore successfully');
+    } catch (secureStoreError) {
+      console.warn('SecureStore failed, falling back to AsyncStorage:', secureStoreError);
       try {
         // Fallback to AsyncStorage
-        await AsyncStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, token);
+        await AsyncStorage.setItem(`@${STORAGE_KEYS.AUTH_TOKEN}`, token);
         console.log('Token stored in AsyncStorage successfully');
       } catch (asyncError) {
         console.error('Failed to store auth token in AsyncStorage:', asyncError);
@@ -36,26 +32,36 @@ export const storage = {
   },
 
   /**
-   * Retrieve authentication token from Keychain with AsyncStorage fallback
+   * Retrieve authentication token from Expo SecureStore
    */
   async getAuthToken(): Promise<string | null> {
     try {
-      // Try Keychain first
-      const credentials = await Keychain.getGenericPassword({
-        service: KEYCHAIN_SERVICE,
-      });
-      
-      if (credentials && credentials.password) {
-        return credentials.password;
+      // Try SecureStore first
+      const token = await SecureStore.getItemAsync(STORAGE_KEYS.AUTH_TOKEN);
+      if (token) {
+        return token;
       }
       
-      // Fallback to AsyncStorage
-      const token = await AsyncStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
-      return token;
+      // Fallback to AsyncStorage (for migration from old storage)
+      const fallbackToken = await AsyncStorage.getItem(`@${STORAGE_KEYS.AUTH_TOKEN}`);
+      
+      // If found in AsyncStorage, migrate to SecureStore
+      if (fallbackToken) {
+        try {
+          await SecureStore.setItemAsync(STORAGE_KEYS.AUTH_TOKEN, fallbackToken);
+          await AsyncStorage.removeItem(`@${STORAGE_KEYS.AUTH_TOKEN}`);
+          console.log('Migrated token from AsyncStorage to SecureStore');
+        } catch (migrationError) {
+          console.warn('Failed to migrate token to SecureStore:', migrationError);
+        }
+        return fallbackToken;
+      }
+      
+      return null;
     } catch (error) {
-      console.warn('Failed to retrieve auth token from Keychain, trying AsyncStorage:', error);
+      console.warn('Failed to retrieve auth token from SecureStore, trying AsyncStorage:', error);
       try {
-        const token = await AsyncStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
+        const token = await AsyncStorage.getItem(`@${STORAGE_KEYS.AUTH_TOKEN}`);
         return token;
       } catch (asyncError) {
         console.error('Failed to retrieve auth token from AsyncStorage:', asyncError);
@@ -65,21 +71,20 @@ export const storage = {
   },
 
   /**
-   * Clear authentication token from both Keychain and AsyncStorage
+   * Clear authentication token from both SecureStore and AsyncStorage
    */
   async clearAuthToken(): Promise<void> {
     try {
-      // Clear from Keychain
-      await Keychain.resetGenericPassword({
-        service: KEYCHAIN_SERVICE,
-      });
-    } catch (keychainError) {
-      console.warn('Failed to clear token from Keychain:', keychainError);
+      // Clear from SecureStore
+      await SecureStore.deleteItemAsync(STORAGE_KEYS.AUTH_TOKEN);
+      console.log('Token cleared from SecureStore');
+    } catch (secureStoreError) {
+      console.warn('Failed to clear token from SecureStore:', secureStoreError);
     }
     
     try {
-      // Clear from AsyncStorage
-      await AsyncStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
+      // Clear from AsyncStorage (cleanup)
+      await AsyncStorage.removeItem(`@${STORAGE_KEYS.AUTH_TOKEN}`);
     } catch (asyncError) {
       console.warn('Failed to clear token from AsyncStorage:', asyncError);
     }
