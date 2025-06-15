@@ -59,17 +59,17 @@ export const FormInput = forwardRef<TextInput, FormInputProps>(
     };
 
     const baseContainerClass = `mb-4 ${containerClassName}`;
-    const baseLabelClass = `text-sm font-medium mb-2 ${
+    const baseLabelClass = `text-sm font-bold mb-3 ${
       hasError ? 'text-functional-error' : 'text-text-primary'
     } ${labelClassName}`;
     
-    const baseInputClass = `flex-1 min-h-[48px] px-4 py-3 text-base text-text-primary bg-white rounded-lg border ${
+    const baseInputClass = `flex-1 min-h-[52px] px-4 py-4 text-base text-text-primary bg-white rounded-xl border-2 ${
       hasError 
-        ? 'border-functional-error' 
+        ? 'border-functional-error bg-supporting-error' 
         : isFocused 
-        ? 'border-primary-600' 
-        : 'border-light-300'
-    } ${inputClassName}`;
+        ? 'border-primary-600 bg-primary-50' 
+        : 'border-light-300 bg-white'
+    } shadow-sm ${inputClassName}`;
 
     const baseErrorClass = `text-sm text-functional-error mt-1 ${errorClassName}`;
 

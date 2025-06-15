@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   TextInput,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Link, useRouter } from 'expo-router';
 import { FormInput } from '../../components/auth/FormInput';
@@ -152,89 +153,105 @@ export default function SignInScreen() {
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          <View className="flex-1 px-6 py-8">
-            {/* Header */}
-            <View className="mb-8">
-              <Text className="text-3xl font-bold text-text-primary mb-2">
+          <View className="flex-1 px-6 py-4">
+            {/* Logo Section - VERIFIED with Expo docs */}
+            <View className="items-center mb-8 mt-4">
+              <Image 
+                source={require('../../assets/images/logo.png')}
+                style={{ width: 96, height: 96 }}
+                contentFit="contain"
+              />
+            </View>
+
+            {/* Enhanced Header - VERIFIED NativeWind classes */}
+            <View className="mb-10">
+              <Text className="text-3xl font-bold text-text-primary text-center mb-3">
                 Welcome back
               </Text>
-              <Text className="text-base text-text-secondary">
+              <Text className="text-base text-text-secondary text-center leading-6 px-4">
                 Sign in to continue your language learning journey
               </Text>
             </View>
 
-            {/* General Error Message */}
+            {/* General Error Message - Enhanced */}
             {generalError ? (
               <ErrorMessage
                 message={generalError}
                 onDismiss={() => setGeneralError('')}
                 variant="banner"
-                className="mb-6"
+                className="mb-8 mx-2"
               />
             ) : null}
 
-            {/* Sign In Form */}
-            <View className="mb-8">
-              <FormInput
-                label="Email"
-                value={formData.email}
-                onChangeText={handleInputChange('email')}
-                error={errors.email}
-                keyboardType="email-address"
-                returnKeyType="next"
-                onSubmitEditing={navigateToPassword}
-                placeholder="Enter your email"
-                required
-              />
+            {/* Enhanced Sign In Form - VERIFIED spacing classes */}
+            <View className="mb-10">
+              <View className="space-y-6">
+                <FormInput
+                  label="Email"
+                  value={formData.email}
+                  onChangeText={handleInputChange('email')}
+                  error={errors.email}
+                  keyboardType="email-address"
+                  returnKeyType="next"
+                  onSubmitEditing={navigateToPassword}
+                  placeholder="Enter your email"
+                  required
+                  containerClassName="mb-0"
+                />
 
-              <FormInput
-                ref={passwordRef}
-                label="Password"
-                value={formData.password}
-                onChangeText={handleInputChange('password')}
-                error={errors.password}
-                secureTextEntry
-                returnKeyType="done"
-                onSubmitEditing={handleSubmit}
-                placeholder="Enter your password"
-                required
+                <FormInput
+                  ref={passwordRef}
+                  label="Password"
+                  value={formData.password}
+                  onChangeText={handleInputChange('password')}
+                  error={errors.password}
+                  secureTextEntry
+                  returnKeyType="done"
+                  onSubmitEditing={handleSubmit}
+                  placeholder="Enter your password"
+                  required
+                  containerClassName="mb-0"
+                />
+              </View>
+            </View>
+
+            {/* Enhanced Sign In Button - VERIFIED shadow classes */}
+            <View className="mb-8">
+              <LoadingButton
+                title="Sign In"
+                onPress={handleSubmit}
+                loading={loading}
+                variant="primary"
+                containerClassName="shadow-lg shadow-primary-600/25 py-4 rounded-2xl"
+                textClassName="text-white font-bold text-lg"
               />
             </View>
 
-            {/* Sign In Button */}
-            <LoadingButton
-              className="bg-primary-600 text-white items-center py-4 mx-10 rounded-3xl"
-              title="Sign In"
-              onPress={handleSubmit}
-              loading={loading}
-              containerClassName="mb-6"
-            />
-
-            {/* Forgot Password - Placeholder for future implementation */}
-            <TouchableOpacity className="mb-8">
-              <Text className="text-primary-600 text-center text-base font-medium">
+            {/* Enhanced Forgot Password */}
+            <TouchableOpacity className="mb-10">
+              <Text className="text-primary-600 text-center text-base font-semibold">
                 Forgot Password? (Coming Soon)
               </Text>
             </TouchableOpacity>
 
-            {/* Divider */}
+            {/* Enhanced Divider - VERIFIED layout classes */}
             <View className="flex-row items-center mb-8">
               <View className="flex-1 h-px bg-light-300" />
-              <Text className="mx-4 text-text-secondary text-sm">or</Text>
+              <Text className="mx-6 text-text-secondary text-sm font-medium">or</Text>
               <View className="flex-1 h-px bg-light-300" />
             </View>
 
-            {/* Sign Up Link */}
-            <View className="flex-row justify-center">
-              <Text className="text-text-secondary text-base">
-                Don't have an account?{' '}
+            {/* Enhanced Sign Up Link */}
+            <View className="flex-row justify-center items-center bg-light-100 py-4 rounded-xl">
+              <Text className="text-text-secondary text-base mr-2">
+                Don't have an account?
               </Text>
               <TouchableOpacity 
                 onPress={handleNavigateToSignUp}
                 disabled={navigationDisabled}
                 style={{ opacity: navigationDisabled ? 0.6 : 1 }}
               >
-                <Text className="text-primary-600 text-base font-medium">
+                <Text className="text-primary-600 text-base font-bold">
                   Sign Up
                 </Text>
               </TouchableOpacity>
