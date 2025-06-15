@@ -23,6 +23,12 @@ export default function AuthLayout() {
           title: 'Sign Up',
         }}
       />
+      <Stack.Screen 
+        name="welcome"
+        options={{
+          title: 'Welcome',
+        }}
+      />
     </Stack>
   );
 }
