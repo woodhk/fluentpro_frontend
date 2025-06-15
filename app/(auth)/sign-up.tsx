@@ -170,7 +170,7 @@ export default function SignUpScreen() {
             {/* Logo Section - VERIFIED smaller size for sign-up */}
             <View className="items-center mb-6 mt-2">
               <Image 
-                source={require('../../assets/images/logo.png')}
+                source={require('../../assets/icons/logo.png')}
                 style={{ width: 96, height: 96 }}
                 contentFit="contain"
               />

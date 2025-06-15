@@ -157,7 +157,7 @@ export default function SignInScreen() {
             {/* Logo Section - VERIFIED with Expo docs */}
             <View className="items-center mb-8 mt-4">
               <Image 
-                source={require('../../assets/images/logo.png')}
+                source={require('../../assets/icons/logo.png')}
                 style={{ width: 96, height: 96 }}
                 contentFit="contain"
               />
