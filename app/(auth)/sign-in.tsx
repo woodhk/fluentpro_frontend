@@ -1,5 +1,5 @@
 // app/(auth)/sign-in.tsx
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   View,
   Text,
@@ -32,6 +32,26 @@ export default function SignInScreen() {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<ValidationErrors>({});
   const [generalError, setGeneralError] = useState<string>('');
+  const [navigationDisabled, setNavigationDisabled] = useState(false);
+
+  // Cleanup and reset when component mounts
+  useEffect(() => {
+    // Reset form data
+    setFormData({
+      email: '',
+      password: '',
+    });
+    
+    // Clear errors
+    setErrors({});
+    setGeneralError('');
+    setLoading(false);
+    
+    // Ensure TextInput refs are properly cleaned
+    if (passwordRef.current) {
+      passwordRef.current.blur();
+    }
+  }, []);
 
   const handleInputChange = (field: keyof typeof formData) => (value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -110,8 +130,18 @@ export default function SignInScreen() {
     passwordRef.current?.focus();
   };
 
+  const handleNavigateToSignUp = () => {
+    if (navigationDisabled) return;
+    
+    setNavigationDisabled(true);
+    router.replace('/(auth)/sign-up');
+    
+    // Re-enable after transition completes
+    setTimeout(() => setNavigationDisabled(false), 300);
+  };
+
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView key="sign-in-screen" className="flex-1 bg-white">
       <KeyboardAvoidingView
         className="flex-1"
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -199,13 +229,15 @@ export default function SignInScreen() {
               <Text className="text-text-secondary text-base">
                 Don't have an account?{' '}
               </Text>
-              <Link href="/(auth)/sign-up" asChild>
-                <TouchableOpacity>
-                  <Text className="text-primary-600 text-base font-medium">
-                    Sign Up
-                  </Text>
-                </TouchableOpacity>
-              </Link>
+              <TouchableOpacity 
+                onPress={handleNavigateToSignUp}
+                disabled={navigationDisabled}
+                style={{ opacity: navigationDisabled ? 0.6 : 1 }}
+              >
+                <Text className="text-primary-600 text-base font-medium">
+                  Sign Up
+                </Text>
+              </TouchableOpacity>
             </View>
           </View>
         </ScrollView>

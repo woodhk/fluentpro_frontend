@@ -6,9 +6,9 @@ export default function AuthLayout() {
     <Stack
       screenOptions={{
         headerShown: false,
-        // Configure transition animations
         animation: 'slide_from_right',
-        gestureEnabled: true,
+        gestureEnabled: false, // Prevent gesture conflicts
+        animationDuration: 250, // Shorter duration
       }}
     >
       <Stack.Screen 
