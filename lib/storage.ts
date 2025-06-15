@@ -1,40 +1,92 @@
 // lib/storage.ts
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Keychain from 'react-native-keychain';
 import { User } from './types';
 
 const STORAGE_KEYS = {
-  AUTH_TOKEN: '@fluentpro/auth_token',
+  AUTH_TOKEN: '@fluentpro/auth_token', // Fallback to AsyncStorage
   USER_DATA: '@fluentpro/user_data',
   ONBOARDING_STATUS: '@fluentpro/onboarding_status',
 } as const;
 
+const KEYCHAIN_SERVICE = 'FluentPro';
+
 export const storage = {
   /**
-   * Store authentication token securely
+   * Store authentication token securely using Keychain with AsyncStorage fallback
    */
   async setAuthToken(token: string): Promise<void> {
     try {
-      await AsyncStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, token);
-    } catch (error) {
-      console.error('Failed to store auth token:', error);
-      throw new Error('Failed to store authentication token');
+      // Try Keychain first (more secure)
+      await Keychain.setGenericPassword('auth_token', token, {
+        service: KEYCHAIN_SERVICE,
+      });
+      console.log('Token stored in Keychain successfully');
+    } catch (keychainError) {
+      console.warn('Keychain failed, falling back to AsyncStorage:', keychainError);
+      try {
+        // Fallback to AsyncStorage
+        await AsyncStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, token);
+        console.log('Token stored in AsyncStorage successfully');
+      } catch (asyncError) {
+        console.error('Failed to store auth token in AsyncStorage:', asyncError);
+        throw new Error('Failed to store authentication token');
+      }
     }
   },
 
   /**
-   * Retrieve authentication token
+   * Retrieve authentication token from Keychain with AsyncStorage fallback
    */
   async getAuthToken(): Promise<string | null> {
     try {
-      return await AsyncStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
+      // Try Keychain first
+      const credentials = await Keychain.getGenericPassword({
+        service: KEYCHAIN_SERVICE,
+      });
+      
+      if (credentials && credentials.password) {
+        return credentials.password;
+      }
+      
+      // Fallback to AsyncStorage
+      const token = await AsyncStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
+      return token;
     } catch (error) {
-      console.error('Failed to retrieve auth token:', error);
-      return null;
+      console.warn('Failed to retrieve auth token from Keychain, trying AsyncStorage:', error);
+      try {
+        const token = await AsyncStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
+        return token;
+      } catch (asyncError) {
+        console.error('Failed to retrieve auth token from AsyncStorage:', asyncError);
+        return null;
+      }
     }
   },
 
   /**
-   * Store user data
+   * Clear authentication token from both Keychain and AsyncStorage
+   */
+  async clearAuthToken(): Promise<void> {
+    try {
+      // Clear from Keychain
+      await Keychain.resetGenericPassword({
+        service: KEYCHAIN_SERVICE,
+      });
+    } catch (keychainError) {
+      console.warn('Failed to clear token from Keychain:', keychainError);
+    }
+    
+    try {
+      // Clear from AsyncStorage
+      await AsyncStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
+    } catch (asyncError) {
+      console.warn('Failed to clear token from AsyncStorage:', asyncError);
+    }
+  },
+
+  /**
+   * Store user data in AsyncStorage (non-sensitive)
    */
   async setUserData(user: User): Promise<void> {
     try {
@@ -47,7 +99,7 @@ export const storage = {
   },
 
   /**
-   * Retrieve user data
+   * Retrieve user data from AsyncStorage
    */
   async getUserData(): Promise<User | null> {
     try {
@@ -91,10 +143,12 @@ export const storage = {
    */
   async clearAuthData(): Promise<void> {
     try {
-      await AsyncStorage.multiRemove([
-        STORAGE_KEYS.AUTH_TOKEN,
-        STORAGE_KEYS.USER_DATA,
-        STORAGE_KEYS.ONBOARDING_STATUS,
+      await Promise.all([
+        this.clearAuthToken(),
+        AsyncStorage.multiRemove([
+          STORAGE_KEYS.USER_DATA,
+          STORAGE_KEYS.ONBOARDING_STATUS,
+        ])
       ]);
     } catch (error) {
       console.error('Failed to clear auth data:', error);

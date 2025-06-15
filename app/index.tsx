@@ -17,16 +17,24 @@ export default function AuthLoadingScreen() {
       // Get current authentication state
       const authState = await authService.getAuthState();
       
-      if (authState.isSignedIn && authState.user) {
-        // User is signed in, check if they need onboarding
-        const needsOnboarding = await authService.needsOnboarding();
+      if (authState.isSignedIn && authState.user && authState.token) {
+        // Validate session with backend to ensure token is still valid
+        const isSessionValid = await authService.validateSession();
         
-        if (needsOnboarding) {
-          // Redirect to onboarding
-          router.replace('/(app)/onboarding');
+        if (isSessionValid) {
+          // User is signed in with valid session, check if they need onboarding
+          const needsOnboarding = await authService.needsOnboarding();
+          
+          if (needsOnboarding) {
+            // Redirect to onboarding
+            router.replace('/(app)/onboarding');
+          } else {
+            // Redirect to main app
+            router.replace('/(app)/home');
+          }
         } else {
-          // Redirect to main app
-          router.replace('/(app)/home');
+          // Session is invalid, redirect to auth flow
+          router.replace('/(auth)/sign-in');
         }
       } else {
         // User is not signed in, redirect to auth flow

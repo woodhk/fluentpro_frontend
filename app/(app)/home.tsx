@@ -21,9 +21,24 @@ export default function HomeScreen() {
   const loadUserData = async () => {
     try {
       const authState = await authService.getAuthState();
-      setUser(authState.user);
+      if (authState.user) {
+        setUser(authState.user);
+      } else {
+        // Try to refresh user data from backend
+        const refreshedUser = await authService.refreshUserData();
+        if (refreshedUser) {
+          setUser(refreshedUser);
+        } else {
+          // If we can't get user data, sign out
+          await authService.signOut();
+          router.replace('/(auth)/sign-in');
+        }
+      }
     } catch (error) {
       console.error('Failed to load user data:', error);
+      // If loading fails, sign out for security
+      await authService.signOut();
+      router.replace('/(auth)/sign-in');
     } finally {
       setLoading(false);
     }
@@ -111,14 +126,21 @@ export default function HomeScreen() {
               <View className="flex-row items-center">
                 <Ionicons name="calendar-outline" size={20} color="#666666" />
                 <Text className="text-text-secondary ml-3 flex-1">
-                  {user?.date_of_birth || 'Not provided'}
+                  {user?.date_of_birth ? 
+                    new Date(user.date_of_birth).toLocaleDateString() : 
+                    'Not provided'
+                  }
                 </Text>
               </View>
               
               <View className="flex-row items-center">
-                <Ionicons name="checkmark-circle-outline" size={20} color="#34C759" />
-                <Text className="text-functional-success ml-3 flex-1">
-                  Account Active
+                <Ionicons 
+                  name={user?.is_active ? "checkmark-circle-outline" : "close-circle-outline"} 
+                  size={20} 
+                  color={user?.is_active ? "#34C759" : "#FF3B30"}
+                />
+                <Text className={`ml-3 flex-1 ${user?.is_active ? 'text-functional-success' : 'text-functional-error'}`}>
+                  {user?.is_active ? 'Account Active' : 'Account Inactive'}
                 </Text>
               </View>
             </View>

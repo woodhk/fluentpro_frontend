@@ -1,37 +1,50 @@
 // lib/auth.ts
 import { SignUpRequest, SignInRequest, User, AuthState, ApiError } from './types';
-import { apiClient, createMockToken } from './api';
+import { apiClient } from './api';
 import { storage } from './storage';
 
 class AuthService {
   /**
-   * Sign up a new user
+   * Sign up a new user and automatically sign them in
    */
   async signUp(signUpData: SignUpRequest): Promise<{ success: boolean; user?: User }> {
     try {
+      console.log('AuthService: Starting signup process');
+      
       // Call the backend signup API
       const response = await apiClient.signUp(signUpData);
       
       if (response.success && response.user_id) {
-        // Create mock token for development
-        const token = createMockToken(response.user_id);
+        console.log('AuthService: Signup successful, now automatically signing in');
         
-        // Store the authentication token
-        await storage.setAuthToken(token);
-        
-        // Create user object from signup data
-        const user: User = {
-          id: response.user_id,
-          email: signUpData.email,
-          full_name: signUpData.full_name,
-          date_of_birth: signUpData.date_of_birth,
-          is_active: true,
-        };
-        
-        // Store user data
-        await storage.setUserData(user);
-        
-        return { success: true, user };
+        // Automatically sign in the user after successful signup
+        try {
+          const loginResult = await this.signIn({
+            email: signUpData.email,
+            password: signUpData.password,
+          });
+          
+          if (loginResult.success && loginResult.user) {
+            console.log('AuthService: Auto-login after signup successful');
+            return { success: true, user: loginResult.user };
+          } else {
+            throw new Error('Failed to automatically sign in after signup');
+          }
+        } catch (loginError) {
+          console.error('AuthService: Auto-login after signup failed:', loginError);
+          // If auto-login fails, still return success but indicate user needs to login manually
+          const user: User = {
+            id: response.user_id,
+            email: signUpData.email,
+            full_name: signUpData.full_name,
+            date_of_birth: signUpData.date_of_birth,
+            is_active: true,
+          };
+          
+          // Don't throw error, but user will need to login manually
+          console.warn('User created but auto-login failed. User will need to login manually.');
+          return { success: true, user };
+        }
       } else {
         throw new Error(response.message || 'Signup failed');
       }
@@ -42,39 +55,75 @@ class AuthService {
   }
 
   /**
-   * Sign in an existing user
+   * Sign in an existing user - REAL IMPLEMENTATION with detailed error handling
    */
   async signIn(signInData: SignInRequest): Promise<{ success: boolean; user?: User }> {
     try {
-      // For demo purposes, create a mock successful login
-      // In production, this would call the actual login API
+      console.log('AuthService: Starting sign in process');
+      
+      // Call the real backend login API
       const response = await apiClient.signIn(signInData);
       
-      if (response.success && response.user_id) {
-        // Create mock token
-        const token = createMockToken(response.user_id);
+      console.log('AuthService: Received login response:', {
+        success: response.success,
+        hasToken: !!response.access_token,
+        hasUser: !!response.user,
+      });
+      
+      if (response.success && response.access_token && response.user) {
+        console.log('AuthService: Storing token and user data');
         
-        // Store the token
-        await storage.setAuthToken(token);
-        
-        // Create mock user data for demo
-        const user: User = {
-          id: response.user_id,
-          email: signInData.email,
-          full_name: 'Demo User',
-          is_active: true,
-        };
+        // Store the real JWT token securely
+        try {
+          await storage.setAuthToken(response.access_token);
+          console.log('AuthService: Token stored successfully');
+        } catch (storageError) {
+          console.error('AuthService: Failed to store token:', storageError);
+          throw new Error('Failed to store authentication token');
+        }
         
         // Store user data
-        await storage.setUserData(user);
+        try {
+          await storage.setUserData(response.user);
+          console.log('AuthService: User data stored successfully');
+        } catch (userStorageError) {
+          console.error('AuthService: Failed to store user data:', userStorageError);
+          // Don't fail login if user data storage fails
+        }
         
-        return { success: true, user };
+        return { success: true, user: response.user };
       } else {
         throw new Error(response.message || 'Login failed');
       }
     } catch (error) {
       console.error('Sign in error:', error);
-      throw error;
+      
+      // Handle specific error types
+      if (error && typeof error === 'object' && 'message' in error) {
+        const errorMessage = (error as ApiError).message;
+        
+        // Handle storage errors specifically
+        if (errorMessage.includes('store') || errorMessage.includes('storage')) {
+          throw new Error('Failed to save login information. Please try again.');
+        }
+        
+        // Check for common login errors
+        if (errorMessage.toLowerCase().includes('invalid') || 
+            errorMessage.toLowerCase().includes('incorrect') ||
+            errorMessage.toLowerCase().includes('unauthorized') ||
+            errorMessage.includes('422')) {
+          throw new Error('Invalid email or password. Please try again.');
+        }
+        
+        if (errorMessage.toLowerCase().includes('network') ||
+            errorMessage.toLowerCase().includes('connection')) {
+          throw new Error('Unable to connect to the server. Please check your internet connection.');
+        }
+        
+        throw new Error(errorMessage);
+      }
+      
+      throw new Error('Login failed. Please check your connection and try again.');
     }
   }
 
@@ -144,26 +193,57 @@ class AuthService {
   }
 
   /**
-   * Validate authentication token and refresh user data
+   * Validate authentication token and refresh user data if needed
    */
   async validateSession(): Promise<boolean> {
     try {
       const token = await storage.getAuthToken();
       if (!token) {
+        console.log('AuthService: No token found during session validation');
         return false;
       }
 
-      // In production, you might want to verify the token with the backend
-      // const status = await apiClient.getAuthStatus();
-      // return status.authenticated;
-
-      // For demo purposes, assume token is valid if it exists
-      return true;
+      console.log('AuthService: Validating session with backend');
+      
+      // Verify token with backend
+      const status = await apiClient.getAuthStatus();
+      
+      if (status.authenticated) {
+        console.log('AuthService: Session is valid');
+        // Optionally refresh user data
+        try {
+          const user = await apiClient.getCurrentUser();
+          await storage.setUserData(user);
+        } catch (userError) {
+          console.warn('Failed to refresh user data:', userError);
+          // Don't fail validation just because user data refresh failed
+        }
+        return true;
+      } else {
+        console.log('AuthService: Session is invalid, clearing auth data');
+        // Token is invalid, clear auth data
+        await storage.clearAuthData();
+        return false;
+      }
     } catch (error) {
       console.error('Session validation error:', error);
       // Clear invalid authentication data
       await storage.clearAuthData();
       return false;
+    }
+  }
+
+  /**
+   * Refresh user data from backend
+   */
+  async refreshUserData(): Promise<User | null> {
+    try {
+      const user = await apiClient.getCurrentUser();
+      await storage.setUserData(user);
+      return user;
+    } catch (error) {
+      console.error('Failed to refresh user data:', error);
+      return null;
     }
   }
 }

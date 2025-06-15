@@ -1,5 +1,5 @@
 // lib/api.ts
-import { SignUpRequest, SignInRequest, AuthResponse, User, ApiError } from './types';
+import { SignUpRequest, SignInRequest, AuthResponse, User, ApiError, LoginResponse } from './types';
 import { storage } from './storage';
 
 const API_BASE_URL = 'https://fluentpro-backend.onrender.com/api/v1';
@@ -30,8 +30,23 @@ class ApiClient {
       ...options,
     };
 
+    // Debug logging
+    console.log('API Request:', {
+      method: config.method || 'GET',
+      url,
+      headers: config.headers,
+      body: config.body,
+    });
+
     try {
       const response = await fetch(url, config);
+      
+      // Debug logging
+      console.log('API Response:', {
+        status: response.status,
+        statusText: response.statusText,
+        headers: Object.fromEntries(response.headers.entries()),
+      });
       
       // Handle different response types
       const contentType = response.headers.get('content-type');
@@ -43,12 +58,15 @@ class ApiClient {
         data = await response.text();
       }
 
+      console.log('API Response Data:', data);
+
       if (!response.ok) {
         // Handle API errors
         const error: ApiError = {
-          message: data?.detail || data?.message || `HTTP ${response.status}`,
+          message: data?.detail || data?.message || `HTTP ${response.status}: ${response.statusText}`,
           details: typeof data === 'string' ? data : JSON.stringify(data),
         };
+        console.error('API Error:', error);
         throw error;
       }
 
@@ -76,27 +94,21 @@ class ApiClient {
   }
 
   /**
-   * Sign in user
-   * Note: Backend doesn't have a direct login endpoint, so we'll use signup for demo
-   * In production, you'd have a separate login endpoint
+   * Sign in user - REAL IMPLEMENTATION with debugging
    */
-  async signIn(signInData: SignInRequest): Promise<AuthResponse> {
-    // For demo purposes, we'll create a mock response
-    // In production, replace this with actual login API call
-    console.warn('Sign in endpoint not implemented in backend. Creating mock response.');
-    
-    // Mock successful login - in production, replace with:
-    // return this.makeRequest<AuthResponse>('/auth/signin', {
-    //   method: 'POST',
-    //   body: JSON.stringify(signInData),
-    // });
-    
-    return {
-      success: true,
-      message: 'Login successful (demo mode)',
-      user_id: 'demo-user-id',
-      auth0_id: 'demo-auth0-id',
-    };
+  async signIn(signInData: SignInRequest): Promise<LoginResponse> {
+    console.log('Attempting login with data:', {
+      email: signInData.email,
+      passwordLength: signInData.password.length,
+    });
+
+    return this.makeRequest<LoginResponse>('/auth/login', {
+      method: 'POST',
+      body: JSON.stringify({
+        email: signInData.email,
+        password: signInData.password,
+      }),
+    });
   }
 
   /**
@@ -122,20 +134,3 @@ class ApiClient {
 }
 
 export const apiClient = new ApiClient();
-
-/**
- * Create a mock JWT token for testing
- * In production, this would come from the backend
- */
-export function createMockToken(userId: string): string {
-  const payload = {
-    sub: userId,
-    email: 'demo@example.com',
-    name: 'Demo User',
-    iat: Math.floor(Date.now() / 1000),
-    exp: Math.floor(Date.now() / 1000) + (24 * 60 * 60), // 24 hours
-  };
-  
-  // This is a mock token - in production, use the token from backend
-  return `mock.${btoa(JSON.stringify(payload))}.signature`;
-}

@@ -63,7 +63,7 @@ export default function SignInScreen() {
       // Clear any previous errors
       setErrors({});
 
-      // Attempt sign in
+      // Attempt sign in with real backend
       const result = await authService.signIn({
         email: formData.email.trim(),
         password: formData.password,
@@ -84,9 +84,22 @@ export default function SignInScreen() {
       
       // Handle different types of errors
       if (error instanceof Error) {
-        setGeneralError(error.message);
+        const errorMessage = error.message;
+        
+        // Check for specific error types
+        if (errorMessage.toLowerCase().includes('email') || 
+            errorMessage.toLowerCase().includes('password') ||
+            errorMessage.toLowerCase().includes('invalid') ||
+            errorMessage.toLowerCase().includes('incorrect')) {
+          setGeneralError('Invalid email or password. Please check your credentials and try again.');
+        } else if (errorMessage.toLowerCase().includes('network') ||
+                   errorMessage.toLowerCase().includes('connection')) {
+          setGeneralError('Unable to connect to the server. Please check your internet connection and try again.');
+        } else {
+          setGeneralError(errorMessage);
+        }
       } else {
-        setGeneralError('Sign in failed. Please check your credentials and try again.');
+        setGeneralError('Sign in failed. Please try again.');
       }
     } finally {
       setLoading(false);

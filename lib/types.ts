@@ -20,11 +20,20 @@ export interface SignInRequest {
   password: string;
 }
 
+// Updated to match backend response
 export interface AuthResponse {
   success: boolean;
   message: string;
   user_id?: string;
   auth0_id?: string;
+}
+
+// New interface for login response
+export interface LoginResponse {
+  success: boolean;
+  message: string;
+  access_token: string;
+  user: User;
 }
 
 export interface AuthState {
