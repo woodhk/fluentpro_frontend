@@ -62,7 +62,7 @@ export interface ValidationErrors {
 export interface RootStackParamList {
   index: undefined;
   '(auth)': undefined;
-  '(app)': undefined;
+  '(root)': undefined;
 }
 
 export interface AuthStackParamList {

@@ -95,9 +95,9 @@ export default function SignInScreen() {
         const needsOnboarding = await authService.needsOnboarding();
         
         if (needsOnboarding) {
-          router.replace('/(app)/onboarding');
+          router.replace('/(root)/onboarding');
         } else {
-          router.replace('/(app)/home');
+          router.replace('/(root)/(tabs)/home');
         }
       }
     } catch (error) {

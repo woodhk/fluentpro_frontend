@@ -1,4 +1,4 @@
-// app/(app)/onboarding.tsx
+// app/(root)/onboarding.tsx
 import React from 'react';
 import { View, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -15,11 +15,11 @@ export default function OnboardingScreen() {
       await authService.completeOnboarding();
       
       // Navigate to home screen
-      router.replace('/(app)/home');
+      router.replace('/(root)/(tabs)/home');
     } catch (error) {
       console.error('Failed to complete onboarding:', error);
       // Still navigate to home - don't block user
-      router.replace('/(app)/home');
+      router.replace('/(root)/(tabs)/home');
     }
   };
 

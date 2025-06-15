@@ -35,8 +35,8 @@ export const ROUTES = {
     SIGN_UP: '/(auth)/sign-up',
   },
   APP: {
-    HOME: '/(app)/home',
-    ONBOARDING: '/(app)/onboarding',
+    HOME: '/(root)/(tabs)/home',
+    ONBOARDING: '/(root)/onboarding',
   },
   LOADING: 'index',
 } as const;
