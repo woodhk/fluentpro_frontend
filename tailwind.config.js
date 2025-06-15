@@ -5,8 +5,16 @@ module.exports = {
   presets: [require("nativewind/preset")],
   theme: {
     extend: {
+      fontFamily: {
+        Jakarta: ["Jakarta", "sans-serif"],
+        JakartaBold: ["Jakarta-Bold", "sans-serif"],
+        JakartaExtraBold: ["Jakarta-ExtraBold", "sans-serif"],
+        JakartaExtraLight: ["Jakarta-ExtraLight", "sans-serif"],
+        JakartaLight: ["Jakarta-Light", "sans-serif"],
+        JakartaMedium: ["Jakarta-Medium", "sans-serif"],
+        JakartaSemiBold: ["Jakarta-SemiBold", "sans-serif"],
+      },
       colors: {
-
         // Primary colors + shades
         primary: {
           50: '#EBF6FF',
@@ -79,7 +87,7 @@ module.exports = {
           tertiary: '#999999',     // Same as neutralMedium3
           onPrimary: '#FFFFFF',
         },
-      }
+      },
     },
   },
   plugins: [],
