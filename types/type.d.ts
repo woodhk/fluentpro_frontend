@@ -10,21 +10,6 @@ declare interface ButtonProps extends TouchableOpacityProps {
     className?: string;
 }
 
-declare interface GoogleInputProps {
-    icon?: string;
-    initialLocation?: string;
-    containerStyle?: string;
-    textInputBackgroundColor?: string;
-    handlePress: ({
-                      latitude,
-                      longitude,
-                      address,
-                  }: {
-        latitude: number;
-        longitude: number;
-        address: string;
-    }) => void;
-}
 
 declare interface InputFieldProps extends TextInputProps {
     label: string;
@@ -37,10 +22,4 @@ declare interface InputFieldProps extends TextInputProps {
     className?: string;
 }
 
-declare interface PaymentProps {
-    fullName: string;
-    email: string;
-    amount: string;
-    driverId: number;
-    rideTime: number;
-}
+
