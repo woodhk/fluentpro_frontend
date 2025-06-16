@@ -203,7 +203,7 @@ export default function SignUpScreen() {
             placeholder="Enter your password"
             icon={icons.lock}
             secureTextEntry={true}
-            textContentType="newPassword"
+            textContentType="password"
             value={form.password}
             onChangeText={handleInputChange('password')}
             returnKeyType="next"
@@ -222,7 +222,7 @@ export default function SignUpScreen() {
             placeholder="Confirm your password"
             icon={icons.lock}
             secureTextEntry={true}
-            textContentType="newPassword"
+            textContentType="password"
             value={form.confirmPassword}
             onChangeText={handleInputChange('confirmPassword')}
             returnKeyType="done"
