@@ -23,7 +23,6 @@ export default function SignUpScreen() {
   const emailRef = useRef<TextInput>(null);
   const passwordRef = useRef<TextInput>(null);
   const confirmPasswordRef = useRef<TextInput>(null);
-  const dateOfBirthRef = useRef<TextInput>(null);
 
   // Form state
   const [form, setForm] = useState({
@@ -31,7 +30,6 @@ export default function SignUpScreen() {
     email: '',
     password: '',
     confirmPassword: '',
-    dateOfBirth: '',
   });
 
   // UI state
@@ -48,7 +46,6 @@ export default function SignUpScreen() {
         email: '',
         password: '',
         confirmPassword: '',
-        dateOfBirth: '',
       });
       
       // Clear errors
@@ -62,7 +59,7 @@ export default function SignUpScreen() {
         setLoading(false);
         
         // Blur any focused inputs
-        [emailRef, passwordRef, confirmPasswordRef, dateOfBirthRef].forEach(ref => {
+        [emailRef, passwordRef, confirmPasswordRef].forEach(ref => {
           if (ref.current) {
             ref.current.blur();
           }
@@ -96,7 +93,6 @@ export default function SignUpScreen() {
         password: form.password,
         confirmPassword: form.confirmPassword,
         fullName: form.name,
-        dateOfBirth: form.dateOfBirth || undefined,
       });
       
       if (hasValidationErrors(validationErrors)) {
@@ -112,7 +108,6 @@ export default function SignUpScreen() {
         email: form.email.trim(),
         password: form.password,
         full_name: form.name.trim(),
-        ...(form.dateOfBirth && { date_of_birth: form.dateOfBirth }),
       };
 
       // Attempt sign up
@@ -147,7 +142,6 @@ export default function SignUpScreen() {
   const navigateToEmail = () => emailRef.current?.focus();
   const navigateToPassword = () => passwordRef.current?.focus();
   const navigateToConfirmPassword = () => confirmPasswordRef.current?.focus();
-  const navigateToDateOfBirth = () => dateOfBirthRef.current?.focus();
 
   return (
     <ScrollView className="flex-1 bg-white">
@@ -209,7 +203,7 @@ export default function SignUpScreen() {
             placeholder="Enter your password"
             icon={icons.lock}
             secureTextEntry={true}
-            textContentType="password"
+            textContentType="newPassword"
             value={form.password}
             onChangeText={handleInputChange('password')}
             returnKeyType="next"
@@ -228,11 +222,11 @@ export default function SignUpScreen() {
             placeholder="Confirm your password"
             icon={icons.lock}
             secureTextEntry={true}
-            textContentType="password"
+            textContentType="newPassword"
             value={form.confirmPassword}
             onChangeText={handleInputChange('confirmPassword')}
-            returnKeyType="next"
-            onSubmitEditing={navigateToDateOfBirth}
+            returnKeyType="done"
+            onSubmitEditing={onSignUpPress}
             containerStyle={errors.confirmPassword ? "border-functional-error" : ""}
           />
           {errors.confirmPassword && (
@@ -241,22 +235,6 @@ export default function SignUpScreen() {
             </Text>
           )}
 
-          <InputField
-            ref={dateOfBirthRef}
-            label="Date of Birth (Optional)"
-            placeholder="YYYY-MM-DD"
-            icon={icons.calendar || icons.person}
-            value={form.dateOfBirth}
-            onChangeText={handleInputChange('dateOfBirth')}
-            returnKeyType="done"
-            onSubmitEditing={onSignUpPress}
-            containerStyle={errors.dateOfBirth ? "border-functional-error" : ""}
-          />
-          {errors.dateOfBirth && (
-            <Text className="text-functional-error text-xs mt-[-8px] mb-2 ml-2">
-              {errors.dateOfBirth}
-            </Text>
-          )}
 
           {/* Password Requirements */}
           <View className="bg-primary-50 p-3 rounded-lg mt-4 mb-4">

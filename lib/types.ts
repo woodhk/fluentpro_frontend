@@ -4,7 +4,6 @@ export interface User {
   id: string;
   email: string;
   full_name: string;
-  date_of_birth?: string;
   is_active: boolean;
 }
 
@@ -12,7 +11,6 @@ export interface SignUpRequest {
   email: string;
   password: string;
   full_name: string;
-  date_of_birth?: string;
 }
 
 export interface SignInRequest {
@@ -54,7 +52,6 @@ export interface ValidationErrors {
   password?: string;
   confirmPassword?: string;
   fullName?: string;
-  dateOfBirth?: string;
   general?: string;
 }
 

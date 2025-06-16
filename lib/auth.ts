@@ -37,7 +37,6 @@ class AuthService {
             id: response.user_id,
             email: signUpData.email,
             full_name: signUpData.full_name,
-            date_of_birth: signUpData.date_of_birth,
             is_active: true,
           };
           

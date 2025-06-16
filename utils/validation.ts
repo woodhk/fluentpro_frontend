@@ -94,45 +94,6 @@ export function validateFullName(fullName: string): string | undefined {
   return undefined;
 }
 
-/**
- * Validate date of birth (optional field)
- */
-export function validateDateOfBirth(dateOfBirth?: string): string | undefined {
-  if (!dateOfBirth) {
-    return undefined; // Optional field
-  }
-  
-  const date = new Date(dateOfBirth);
-  const now = new Date();
-  
-  // Check if date is valid
-  if (isNaN(date.getTime())) {
-    return 'Please enter a valid date';
-  }
-  
-  // Check if date is not in the future
-  if (date > now) {
-    return 'Date of birth cannot be in the future';
-  }
-  
-  // Check if date is reasonable (not more than 120 years ago)
-  const maxAge = new Date();
-  maxAge.setFullYear(maxAge.getFullYear() - 120);
-  
-  if (date < maxAge) {
-    return 'Please enter a valid date of birth';
-  }
-  
-  // Check if user is at least 13 years old
-  const minAge = new Date();
-  minAge.setFullYear(minAge.getFullYear() - 13);
-  
-  if (date > minAge) {
-    return 'You must be at least 13 years old to sign up';
-  }
-  
-  return undefined;
-}
 
 /**
  * Validate sign up form data
@@ -142,7 +103,6 @@ export function validateSignUpForm(data: {
   password: string;
   confirmPassword: string;
   fullName: string;
-  dateOfBirth?: string;
 }): ValidationErrors {
   const errors: ValidationErrors = {};
   
@@ -151,14 +111,12 @@ export function validateSignUpForm(data: {
   const passwordError = validatePassword(data.password);
   const confirmPasswordError = validateConfirmPassword(data.password, data.confirmPassword);
   const fullNameError = validateFullName(data.fullName);
-  const dateOfBirthError = validateDateOfBirth(data.dateOfBirth);
   
   // Add errors to the errors object
   if (emailError) errors.email = emailError;
   if (passwordError) errors.password = passwordError;
   if (confirmPasswordError) errors.confirmPassword = confirmPasswordError;
   if (fullNameError) errors.fullName = fullNameError;
-  if (dateOfBirthError) errors.dateOfBirth = dateOfBirthError;
   
   return errors;
 }

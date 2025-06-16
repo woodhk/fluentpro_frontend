@@ -123,15 +123,6 @@ export default function HomeScreen() {
                 </Text>
               </View>
               
-              <View className="flex-row items-center">
-                <Ionicons name="calendar-outline" size={20} color="#666666" />
-                <Text className="text-text-secondary ml-3 flex-1">
-                  {user?.date_of_birth ? 
-                    new Date(user.date_of_birth).toLocaleDateString() : 
-                    'Not provided'
-                  }
-                </Text>
-              </View>
               
               <View className="flex-row items-center">
                 <Ionicons 
