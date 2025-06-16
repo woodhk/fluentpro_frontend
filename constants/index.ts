@@ -73,7 +73,7 @@ export const icons = {
     to,
 };
 
-export const introduction = [
+export const welcome = [
     {
         id: 1,
         title: "Speak a new language with confidence",
@@ -98,5 +98,5 @@ export const introduction = [
 ];
 
 export const data = {
-    introduction,
+    welcome,
 };

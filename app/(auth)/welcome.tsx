@@ -3,14 +3,14 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import Swiper from 'react-native-swiper'
 import { useRef, useState } from "react";
-import { introduction } from "@/constants";
+import { welcome } from "@/constants";
 import { Image } from "react-native";
 import CustomButton from "@/components/CustomButton";
 
-const Introduction = () => {
+const Welcome = () => {
   const swiperRef = useRef<Swiper>(null);
   const [activeIndex, setActiveIndex] = useState(0);
-  const isLastSlide = activeIndex === introduction.length - 1;
+  const isLastSlide = activeIndex === welcome.length - 1;
 
   return (
     <SafeAreaView className="flex h-full items-center justify-between bg-white">
@@ -29,7 +29,7 @@ const Introduction = () => {
           activeDot={<View className="w-[32px] h-[4px] mx-1 bg-primary-600 rounded-full"/>}
           onIndexChanged={(index) => setActiveIndex(index)}
           >
-            {introduction.map((item) => (
+            {welcome.map((item) => (
                 <View key={item.id} className="flex items-center justify0center p-5">
 
                   <Image 
@@ -58,4 +58,4 @@ const Introduction = () => {
   );
 };
 
-export default Introduction
+export default Welcome
