@@ -47,11 +47,13 @@ const Introduction = () => {
             ))}
           </Swiper>
 
+          <View className="w-full px-5">
             <CustomButton 
                 title={isLastSlide ? 'Get Started' : 'Next'}
                 onPress={() => isLastSlide ? router.replace('/(auth)/sign-up') : swiperRef.current?.scrollBy(1)}
-                className="w-11/12 mt-10"
+                className="mt-10"
             />
+          </View>
     </SafeAreaView>
   );
 };
