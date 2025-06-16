@@ -1,20 +1,18 @@
 // app/(auth)/sign-in.tsx
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
   ScrollView,
-  KeyboardAvoidingView,
-  Platform,
-  TouchableOpacity,
+  Image,
   TextInput,
+  TouchableOpacity,
 } from 'react-native';
-import { Image } from 'expo-image';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Link, useRouter } from 'expo-router';
-import { FormInput } from '../../components/auth/FormInput';
-import { LoadingButton } from '../../components/auth/LoadingButton';
-import { ErrorMessage } from '../../components/common/ErrorMessage';
+import { useRouter, useFocusEffect } from 'expo-router';
+import InputField from '@/components/InputField';
+import CustomButton from '@/components/CustomButton';
+import { icons, images } from '@/constants';
 import { authService } from '../../lib/auth';
 import { validateSignInForm, hasValidationErrors } from '../../utils/validation';
 import { ValidationErrors } from '../../lib/types';
@@ -24,7 +22,7 @@ export default function SignInScreen() {
   const passwordRef = useRef<TextInput>(null);
 
   // Form state
-  const [formData, setFormData] = useState({
+  const [form, setForm] = useState({
     email: '',
     password: '',
   });
@@ -33,29 +31,36 @@ export default function SignInScreen() {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<ValidationErrors>({});
   const [generalError, setGeneralError] = useState<string>('');
-  const [navigationDisabled, setNavigationDisabled] = useState(false);
 
-  // Cleanup and reset when component mounts
-  useEffect(() => {
-    // Reset form data
-    setFormData({
-      email: '',
-      password: '',
-    });
-    
-    // Clear errors
-    setErrors({});
-    setGeneralError('');
-    setLoading(false);
-    
-    // Ensure TextInput refs are properly cleaned
-    if (passwordRef.current) {
-      passwordRef.current.blur();
-    }
-  }, []);
+  // Reset form when screen comes into focus (prevents state persistence)
+  useFocusEffect(
+    useCallback(() => {
+      // Reset form data
+      setForm({
+        email: '',
+        password: '',
+      });
+      
+      // Clear errors
+      setErrors({});
+      setGeneralError('');
+      setLoading(false);
+      
+      // Cleanup function for when screen loses focus
+      return () => {
+        // Clear any pending operations
+        setLoading(false);
+        
+        // Blur any focused inputs
+        if (passwordRef.current) {
+          passwordRef.current.blur();
+        }
+      };
+    }, [])
+  );
 
-  const handleInputChange = (field: keyof typeof formData) => (value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+  const handleInputChange = (field: keyof typeof form) => (value: string) => {
+    setForm(prev => ({ ...prev, [field]: value }));
     
     // Clear field-specific error when user starts typing
     if (errors[field]) {
@@ -68,13 +73,13 @@ export default function SignInScreen() {
     }
   };
 
-  const handleSubmit = async () => {
+  const onSignInPress = async () => {
     try {
       setLoading(true);
       setGeneralError('');
 
       // Validate form
-      const validationErrors = validateSignInForm(formData);
+      const validationErrors = validateSignInForm(form);
       
       if (hasValidationErrors(validationErrors)) {
         setErrors(validationErrors);
@@ -86,8 +91,8 @@ export default function SignInScreen() {
 
       // Attempt sign in with real backend
       const result = await authService.signIn({
-        email: formData.email.trim(),
-        password: formData.password,
+        email: form.email.trim(),
+        password: form.password,
       });
 
       if (result.success) {
@@ -131,134 +136,85 @@ export default function SignInScreen() {
     passwordRef.current?.focus();
   };
 
-  const handleNavigateToSignUp = () => {
-    if (navigationDisabled) return;
-    
-    setNavigationDisabled(true);
-    router.replace('/(auth)/sign-up');
-    
-    // Re-enable after transition completes
-    setTimeout(() => setNavigationDisabled(false), 300);
-  };
-
   return (
-    <SafeAreaView key="sign-in-screen" className="flex-1 bg-white">
-      <KeyboardAvoidingView
-        className="flex-1"
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      >
-        <ScrollView
-          className="flex-1"
-          contentContainerClassName="min-h-full"
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-        >
-          <View className="flex-1 px-6 py-4">
-            {/* Logo Section - VERIFIED with Expo docs */}
-            <View className="items-center mb-8 mt-4">
-              <Image 
-                source={require('../../assets/icons/logo.png')}
-                style={{ width: 96, height: 96 }}
-                contentFit="contain"
-              />
+    <ScrollView className="flex-1 bg-white">
+      <View className="flex-1 bg-white">
+        <View className="relative w-full h-[250px]">
+          <Image source={images.signUpCar} className="z-0 w-full h-[250px]" />
+          <Text className="text-2xl text-black font-JakartaSemiBold absolute bottom-5 left-5">
+            Welcome back 👋
+          </Text>
+        </View>
+        
+        <View className="p-5">
+          {/* General Error Message */}
+          {generalError ? (
+            <View className="bg-supporting-error p-3 rounded-lg mb-4 border border-functional-error/20">
+              <Text className="text-text-error text-sm">{generalError}</Text>
             </View>
+          ) : null}
 
-            {/* Enhanced Header - VERIFIED NativeWind classes */}
-            <View className="mb-10">
-              <Text className="text-3xl font-bold text-text-primary text-center mb-3">
-                Welcome back
-              </Text>
-              <Text className="text-base text-text-secondary text-center leading-6 px-4">
-                Sign in to continue your language learning journey
-              </Text>
-            </View>
+          <InputField
+            label="Email"
+            placeholder="Enter your email"
+            icon={icons.email}
+            textContentType="emailAddress"
+            value={form.email}
+            onChangeText={handleInputChange('email')}
+            keyboardType="email-address"
+            returnKeyType="next"
+            onSubmitEditing={navigateToPassword}
+            autoCapitalize="none"
+            containerStyle={errors.email ? "border-functional-error" : ""}
+          />
+          {errors.email && (
+            <Text className="text-functional-error text-xs mt-[-8px] mb-2 ml-2">
+              {errors.email}
+            </Text>
+          )}
 
-            {/* General Error Message - Enhanced */}
-            {generalError ? (
-              <ErrorMessage
-                message={generalError}
-                onDismiss={() => setGeneralError('')}
-                variant="banner"
-                className="mb-8 mx-2"
-              />
-            ) : null}
+          <InputField
+            ref={passwordRef}
+            label="Password"
+            placeholder="Enter your password"
+            icon={icons.lock}
+            secureTextEntry={true}
+            textContentType="password"
+            value={form.password}
+            onChangeText={handleInputChange('password')}
+            returnKeyType="done"
+            onSubmitEditing={onSignInPress}
+            containerStyle={errors.password ? "border-functional-error" : ""}
+          />
+          {errors.password && (
+            <Text className="text-functional-error text-xs mt-[-8px] mb-2 ml-2">
+              {errors.password}
+            </Text>
+          )}
 
-            {/* Enhanced Sign In Form - VERIFIED spacing classes */}
-            <View className="mb-10">
-              <View className="space-y-6">
-                <FormInput
-                  label="Email"
-                  value={formData.email}
-                  onChangeText={handleInputChange('email')}
-                  error={errors.email}
-                  keyboardType="email-address"
-                  returnKeyType="next"
-                  onSubmitEditing={navigateToPassword}
-                  placeholder="Enter your email"
-                  required
-                  containerClassName="mb-0"
-                />
+          <CustomButton
+            title={loading ? "Signing In..." : "Sign In"}
+            onPress={onSignInPress}
+            className="mt-6"
+            disabled={loading}
+          />
 
-                <FormInput
-                  ref={passwordRef}
-                  label="Password"
-                  value={formData.password}
-                  onChangeText={handleInputChange('password')}
-                  error={errors.password}
-                  secureTextEntry
-                  returnKeyType="done"
-                  onSubmitEditing={handleSubmit}
-                  placeholder="Enter your password"
-                  required
-                  containerClassName="mb-0"
-                />
-              </View>
-            </View>
+          {/* Forgot Password Link */}
+          <Text className="text-primary-600 text-center text-sm font-JakartaSemiBold mt-4">
+            Forgot Password? (Coming Soon)
+          </Text>
 
-            {/* Enhanced Sign In Button - VERIFIED shadow classes */}
-            <View className="mb-8">
-              <LoadingButton
-                title="Sign In"
-                onPress={handleSubmit}
-                loading={loading}
-                variant="primary"
-                containerClassName="shadow-lg shadow-primary-600/25 py-4 rounded-2xl"
-                textClassName="text-white font-bold text-lg"
-              />
-            </View>
-
-            {/* Enhanced Forgot Password */}
-            <TouchableOpacity className="mb-10">
-              <Text className="text-primary-600 text-center text-base font-semibold">
-                Forgot Password? (Coming Soon)
-              </Text>
-            </TouchableOpacity>
-
-            {/* Enhanced Divider - VERIFIED layout classes */}
-            <View className="flex-row items-center mb-8">
-              <View className="flex-1 h-px bg-light-300" />
-              <Text className="mx-6 text-text-secondary text-sm font-medium">or</Text>
-              <View className="flex-1 h-px bg-light-300" />
-            </View>
-
-            {/* Enhanced Sign Up Link */}
-            <View className="flex-row justify-center items-center bg-light-100 py-4 rounded-xl">
-              <Text className="text-text-secondary text-base mr-2">
-                Don't have an account?
-              </Text>
-              <TouchableOpacity 
-                onPress={handleNavigateToSignUp}
-                disabled={navigationDisabled}
-                style={{ opacity: navigationDisabled ? 0.6 : 1 }}
-              >
-                <Text className="text-primary-600 text-base font-bold">
-                  Sign Up
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+          <TouchableOpacity 
+            onPress={() => router.replace('/(auth)/sign-up')}
+            className="mt-10"
+          >
+            <Text className="text-lg text-center text-general-200">
+              Don't have an account?{" "}
+              <Text className="text-primary-500">Sign Up</Text>
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </ScrollView>
   );
 }

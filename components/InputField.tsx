@@ -1,3 +1,4 @@
+import React, { forwardRef } from 'react';
 import {
   TextInput,
   View,
@@ -11,7 +12,7 @@ import {
 
 import { InputFieldProps } from "@/types/type";
 
-const InputField = ({
+const InputField = forwardRef<TextInput, InputFieldProps>(({
   label,
   icon,
   secureTextEntry = false,
@@ -21,7 +22,7 @@ const InputField = ({
   iconStyle,
   className,
   ...props
-}: InputFieldProps) => {
+}, ref) => {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -38,6 +39,7 @@ const InputField = ({
               <Image source={icon} className={`w-6 h-6 ml-4 ${iconStyle}`} />
             )}
             <TextInput
+              ref={ref}
               className={`rounded-full p-4 font-JakartaSemiBold text-[15px] flex-1 ${inputStyle} text-left`}
               secureTextEntry={secureTextEntry}
               {...props}
@@ -47,6 +49,8 @@ const InputField = ({
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
   );
-};
+});
+
+InputField.displayName = 'InputField';
 
 export default InputField;
