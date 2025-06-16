@@ -34,16 +34,16 @@ export default function AuthLoadingScreen() {
           }
         } else {
           // Session is invalid, redirect to auth flow
-          router.replace('/(auth)/sign-in');
+          router.replace('/(auth)/welcome');
         }
       } else {
         // User is not signed in, redirect to auth flow
-        router.replace('/(auth)/sign-in');
+        router.replace('/(auth)/welcome');
       }
     } catch (error) {
       console.error('Auth check failed:', error);
       // On error, default to auth flow
-      router.replace('/(auth)/sign-in');
+      router.replace('/(auth)/welcome');
     }
   };
 
