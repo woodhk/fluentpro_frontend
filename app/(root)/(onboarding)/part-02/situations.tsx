@@ -65,7 +65,7 @@ const Situations = () => {
       
       if (isLastPartner) {
         // All partners done, go to next part
-        router.push('/(root)/(onboarding)/part-03/summary');
+        router.push('/(root)/(onboarding)/part-02/complete');
       } else {
         // Move to next partner
         dispatch(updateCurrentPartnerIndex(currentPartnerIndex + 1));

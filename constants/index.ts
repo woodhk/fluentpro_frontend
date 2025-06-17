@@ -436,12 +436,33 @@ export const communicationSituations = [
   },
 ];
 
+// Part 2 summary data for completion screen
+export const part2SummaryData = {
+  partners: {
+    title: 'Communication Partners',
+    icon: {
+      library: 'ionicons' as const,
+      name: 'people-outline' as const,
+    },
+    bgColor: '#8B5CF6', // Purple
+  },
+  situations: {
+    title: 'Communication Situations',
+    icon: {
+      library: 'ionicons' as const,
+      name: 'chatbubbles-outline' as const,
+    },
+    bgColor: '#EC4899', // Pink
+  },
+};
+
 export const data = {
     welcome,
     nativeLanguages,
     industries,
     roles,
     summaryData,
+    part2SummaryData,
     communicationPartners,
     communicationSituations,
 };
