@@ -27,7 +27,7 @@ export default function AuthLoadingScreen() {
           
           if (needsOnboarding) {
             // Redirect to onboarding
-            router.replace('/(root)/onboarding');
+            router.replace('/(root)/(onboarding)');
           } else {
             // Redirect to main app
             router.replace('/(root)/(tabs)/home');

@@ -115,7 +115,7 @@ export default function SignUpScreen() {
 
       if (result.success) {
         // Navigate to onboarding flow for new users
-        router.replace('/(root)/onboarding');
+        router.replace('/(root)/(onboarding)');
       }
     } catch (error) {
       console.error('Sign up error:', error);

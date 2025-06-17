@@ -11,9 +11,15 @@ export default function OnboardingLayout() {
       }}
     >
       <Stack.Screen 
-        name="" 
+        name="index" 
         options={{
-          title: '',
+          title: 'Onboarding',
+        }}
+      />
+      <Stack.Screen 
+        name="welcome" 
+        options={{
+          title: 'Welcome',
         }}
       />
 

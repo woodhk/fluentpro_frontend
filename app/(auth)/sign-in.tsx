@@ -100,7 +100,7 @@ export default function SignInScreen() {
         const needsOnboarding = await authService.needsOnboarding();
         
         if (needsOnboarding) {
-          router.replace('/(root)/onboarding');
+          router.replace('/(root)/(onboarding)');
         } else {
           router.replace('/(root)/(tabs)/home');
         }
