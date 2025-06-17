@@ -137,7 +137,7 @@ const RoleInput = () => {
             numberOfLines={6}
             maxLength={1000}
             inputStyle="h-32 text-top"
-            containerStyle="items-start"
+            containerStyle="items-start rounded-lg"
           />
           {descriptionError ? (
             <View className="mt-1">
