@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { apiClient } from '../api';
-import { RoleMatch, RoleSearchRequest, RoleSelectionRequest, CommunicationPartnerAPI, CommunicationPartnerSelectionRequest } from '../types';
+import { RoleMatch, RoleSearchRequest, RoleSelectionRequest, CommunicationPartnerAPI, CommunicationPartnerSelectionRequest, SituationSelectionRequest } from '../types';
 
 export type NativeLanguage = 'english' | 'chinese_traditional' | 'chinese_simplified';
 export type Industry = 'banking_finance' | 'shipping_logistics' | 'real_estate' | 'hotels_hospitality';
@@ -18,6 +18,8 @@ interface OnboardingState {
   // Part 2 data
   availablePartners: CommunicationPartnerAPI[];
   selectedPartners: string[];
+  currentPartnerIndex: number;
+  partnerSituations: { [partnerId: string]: string[] };
   
   // API states
   isLoading: boolean;
@@ -41,6 +43,8 @@ const initialState: OnboardingState = {
   customRole: null,
   availablePartners: [],
   selectedPartners: [],
+  currentPartnerIndex: 0,
+  partnerSituations: {},
   isLoading: false,
   isSearchingRoles: false,
   isLoadingPartners: false,
@@ -128,6 +132,19 @@ export const selectCommunicationPartners = createAsyncThunk(
   }
 );
 
+// Async thunk for selecting communication situations
+export const selectCommunicationSituations = createAsyncThunk(
+  'onboarding/selectCommunicationSituations',
+  async (selectionData: SituationSelectionRequest, { rejectWithValue }) => {
+    try {
+      const response = await apiClient.selectCommunicationSituations(selectionData);
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(error.message || 'Failed to select communication situations');
+    }
+  }
+);
+
 const onboardingSlice = createSlice({
   name: 'onboarding',
   initialState,
@@ -168,6 +185,23 @@ const onboardingSlice = createSlice({
         state.selectedPartners = state.selectedPartners.filter(id => id !== partnerId);
       } else {
         state.selectedPartners.push(partnerId);
+      }
+    },
+    updateCurrentPartnerIndex: (state, action: PayloadAction<number>) => {
+      state.currentPartnerIndex = action.payload;
+    },
+    updatePartnerSituations: (state, action: PayloadAction<{ partnerId: string; situations: string[] }>) => {
+      const { partnerId, situations } = action.payload;
+      state.partnerSituations[partnerId] = situations;
+    },
+    toggleSituationSelection: (state, action: PayloadAction<{ partnerId: string; situationId: string }>) => {
+      const { partnerId, situationId } = action.payload;
+      const currentSituations = state.partnerSituations[partnerId] || [];
+      
+      if (currentSituations.includes(situationId)) {
+        state.partnerSituations[partnerId] = currentSituations.filter(id => id !== situationId);
+      } else {
+        state.partnerSituations[partnerId] = [...currentSituations, situationId];
       }
     },
     clearRoleMatches: (state) => {
@@ -264,10 +298,29 @@ const onboardingSlice = createSlice({
       .addCase(selectCommunicationPartners.fulfilled, (state, action) => {
         state.isLoading = false;
         state.error = null;
-        // Mark part 2 as complete when partners are selected
-        state.part2Complete = true;
+        // Don't mark part 2 as complete yet - need to select situations for each partner
       })
       .addCase(selectCommunicationPartners.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+      })
+      // Communication situations selection cases
+      .addCase(selectCommunicationSituations.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(selectCommunicationSituations.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error = null;
+        // Check if all partners have situations selected
+        const allPartnersHaveSituations = state.selectedPartners.every(
+          partnerId => state.partnerSituations[partnerId]?.length > 0
+        );
+        if (allPartnersHaveSituations) {
+          state.part2Complete = true;
+        }
+      })
+      .addCase(selectCommunicationSituations.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
       });
@@ -283,6 +336,9 @@ export const {
   updateCustomRole, 
   updateSelectedPartners,
   togglePartnerSelection,
+  updateCurrentPartnerIndex,
+  updatePartnerSituations,
+  toggleSituationSelection,
   clearRoleMatches, 
   clearError, 
   resetOnboarding 

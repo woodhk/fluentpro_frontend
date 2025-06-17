@@ -5,11 +5,9 @@ import { View, Text } from 'react-native';
 import { useRouter } from 'expo-router';
 import OnboardingSelectionTemplate from '@/components/onboarding/OnboardingSelectionTemplate';
 import CommunicationPartnerCheckbox from '@/components/CommunicationPartnerCheckbox';
-import { LoadingSpinner } from '@/components/common/LoadingSpinner';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks';
 import { 
-  fetchCommunicationPartners, 
-  selectCommunicationPartners, 
+  selectCommunicationPartners,
   togglePartnerSelection,
   clearError 
 } from '@/lib/slices/onboardingSlice';
@@ -20,9 +18,7 @@ const Partners = () => {
   const dispatch = useAppDispatch();
   
   const {
-    availablePartners,
     selectedPartners,
-    isLoadingPartners,
     isLoading,
     error
   } = useAppSelector((state) => state.onboarding);
@@ -30,9 +26,6 @@ const Partners = () => {
   useEffect(() => {
     // Clear any previous errors when component mounts
     dispatch(clearError());
-    
-    // Fetch available communication partners from API
-    dispatch(fetchCommunicationPartners());
   }, [dispatch]);
 
   const handlePartnerSelect = (partnerId: string) => {
@@ -57,39 +50,6 @@ const Partners = () => {
     }
   };
 
-  // Map API partners with local icon data
-  const partnersToShow = availablePartners.length > 0 
-    ? availablePartners.map(apiPartner => {
-        // Find matching local data by name (case-insensitive)
-        const localPartner = communicationPartners.find(local => 
-          local.name.toLowerCase() === apiPartner.name.toLowerCase()
-        );
-        return {
-          ...apiPartner, // Use API data including the UUID
-          icon: localPartner?.icon || {
-            library: 'ionicons' as const,
-            name: 'people-outline' as const,
-          }
-        };
-      })
-    : communicationPartners;
-
-  if (isLoadingPartners) {
-    return (
-      <OnboardingSelectionTemplate
-        title="Select Communication Partners"
-        description="Who do you typically speak English with at work?"
-        onContinue={() => {}}
-        isContinueDisabled={true}
-      >
-        <View className="flex-1 justify-center items-center">
-          <LoadingSpinner />
-          <Text className="text-text-secondary mt-4">Loading communication partners...</Text>
-        </View>
-      </OnboardingSelectionTemplate>
-    );
-  }
-
   return (
     <OnboardingSelectionTemplate
       title="Select Communication Partners"
@@ -108,7 +68,7 @@ const Partners = () => {
 
         {/* Partners grid */}
         <View className="flex-1">
-          {partnersToShow.map((partner) => (
+          {communicationPartners.map((partner) => (
             <CommunicationPartnerCheckbox
               key={partner.id}
               id={partner.id}

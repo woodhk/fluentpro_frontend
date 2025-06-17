@@ -101,4 +101,24 @@ declare interface CommunicationPartnerCheckboxProps {
     onSelect: (id: string) => void;
 }
 
+declare interface CommunicationSituation {
+    id: string;
+    name: string;
+    icon: {
+        library: string;
+        name: string;
+    };
+}
+
+declare interface SituationCheckboxProps {
+    id: string;
+    name: string;
+    icon: {
+        library: string;
+        name: string;
+    };
+    isSelected: boolean;
+    onSelect: (id: string) => void;
+}
+
 

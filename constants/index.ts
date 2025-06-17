@@ -312,6 +312,130 @@ export const communicationPartners = [
   },
 ];
 
+// Communication situations for onboarding part 2
+export const communicationSituations = [
+  {
+    id: 'meetings',
+    name: 'Meetings',
+    icon: {
+      library: 'ionicons' as const,
+      name: 'people-outline' as const,
+    },
+  },
+  {
+    id: 'presentations',
+    name: 'Presentations',
+    icon: {
+      library: 'ionicons' as const,
+      name: 'easel-outline' as const,
+    },
+  },
+  {
+    id: 'training_sessions',
+    name: 'Training Sessions',
+    icon: {
+      library: 'ionicons' as const,
+      name: 'school-outline' as const,
+    },
+  },
+  {
+    id: 'client_conversations',
+    name: 'Client Conversations',
+    icon: {
+      library: 'ionicons' as const,
+      name: 'chatbubbles-outline' as const,
+    },
+  },
+  {
+    id: 'interviews',
+    name: 'Interviews',
+    icon: {
+      library: 'ionicons' as const,
+      name: 'person-add-outline' as const,
+    },
+  },
+  {
+    id: 'conflict_resolution',
+    name: 'Conflict Resolution',
+    icon: {
+      library: 'ionicons' as const,
+      name: 'shield-checkmark-outline' as const,
+    },
+  },
+  {
+    id: 'phone_calls',
+    name: 'Phone Calls',
+    icon: {
+      library: 'ionicons' as const,
+      name: 'call-outline' as const,
+    },
+  },
+  {
+    id: 'one_on_ones',
+    name: 'One-on-Ones',
+    icon: {
+      library: 'ionicons' as const,
+      name: 'person-circle-outline' as const,
+    },
+  },
+  {
+    id: 'feedback_sessions',
+    name: 'Feedback Sessions',
+    icon: {
+      library: 'ionicons' as const,
+      name: 'thumbs-up-outline' as const,
+    },
+  },
+  {
+    id: 'team_discussions',
+    name: 'Team Discussions',
+    icon: {
+      library: 'ionicons' as const,
+      name: 'people-circle-outline' as const,
+    },
+  },
+  {
+    id: 'negotiations',
+    name: 'Negotiations',
+    icon: {
+      library: 'ionicons' as const,
+      name: 'handshake-outline' as const,
+    },
+  },
+  {
+    id: 'status_updates',
+    name: 'Status Updates',
+    icon: {
+      library: 'ionicons' as const,
+      name: 'clipboard-outline' as const,
+    },
+  },
+  {
+    id: 'informal_chats',
+    name: 'Informal Chats',
+    icon: {
+      library: 'ionicons' as const,
+      name: 'cafe-outline' as const,
+    },
+  },
+  {
+    id: 'briefings',
+    name: 'Briefings',
+    icon: {
+      library: 'ionicons' as const,
+      name: 'document-text-outline' as const,
+    },
+  },
+  {
+    id: 'video_conferences',
+    name: 'Video Conferences',
+    icon: {
+      library: 'ionicons' as const,
+      name: 'videocam-outline' as const,
+    },
+  },
+];
+
 export const data = {
     welcome,
     nativeLanguages,
@@ -319,4 +443,5 @@ export const data = {
     roles,
     summaryData,
     communicationPartners,
+    communicationSituations,
 };

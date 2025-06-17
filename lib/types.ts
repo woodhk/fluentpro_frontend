@@ -135,3 +135,34 @@ export interface CommunicationPartnerSelectionResponse {
   selected_count: number;
   partner_selections: CommunicationPartnerSelection[];
 }
+
+// Communication Situations types for Part 2
+export interface CommunicationSituationAPI {
+  id: string;
+  name: string;
+  icon: {
+    library: string;
+    name: string;
+  };
+}
+
+export interface SituationSelectionRequest {
+  partner_id: string;
+  situation_ids: string[];
+}
+
+export interface SituationSelection {
+  user_id: string;
+  communication_partner_id: string;
+  unit_id: string;
+  priority: number;
+  is_custom: boolean;
+}
+
+export interface SituationSelectionResponse {
+  success: boolean;
+  message: string;
+  partner_id: string;
+  selected_count: number;
+  situation_selections: SituationSelection[];
+}
