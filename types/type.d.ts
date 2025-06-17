@@ -43,14 +43,20 @@ declare interface LanguageCheckboxProps {
 declare interface IndustryOption {
     id: string;
     name: string;
-    icon: string;
+    icon: {
+        library: string;
+        name: string;
+    };
     available: boolean;
 }
 
 declare interface OptionBoxProps {
     id: string;
     name: string;
-    icon: string;
+    icon: {
+        library: string;
+        name: string;
+    } | string;
     isSelected: boolean;
     available: boolean;
     onSelect: (id: string) => void;

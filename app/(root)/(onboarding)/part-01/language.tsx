@@ -1,16 +1,13 @@
 // Screen 3
 
 import React, { useState } from 'react';
-import { View, Text, ScrollView, Alert } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { View, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks';
 import { setNativeLanguage, updateNativeLanguage, type NativeLanguage } from '@/lib/slices/onboardingSlice';
 import { nativeLanguages } from '@/constants';
 import LanguageCheckbox from '@/components/LanguageCheckbox';
-import CustomButton from '@/components/CustomButton';
-import { icons } from '@/constants';
-import { TouchableOpacity, Image } from 'react-native';
+import OnboardingSelectionTemplate from '@/components/onboarding/OnboardingSelectionTemplate';
 
 const NativeLanguageScreen = () => {
   const router = useRouter();
@@ -44,81 +41,28 @@ const NativeLanguageScreen = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
-      <View className="flex-1 px-6">
-        {/* Header with back button and progress */}
-        <View className="h-16 flex-row items-center justify-between">
-          <TouchableOpacity 
-            onPress={() => router.back()}
-            className="p-2 flex-row items-center"
-          >
-            <Image 
-              source={icons.backArrow} 
-              className="w-5 h-5 mr-1"
-              style={{ tintColor: '#234BFF' }}
+    <OnboardingSelectionTemplate
+      title="What's Your Native Language?"
+      description="This will help our tutors explain concepts to you in your mother tongue"
+      onContinue={handleContinue}
+      isContinueDisabled={!selectedLanguage || isLoading}
+      error={error}
+    >
+      <View className="flex-row flex-wrap justify-between">
+        {nativeLanguages.map((language) => (
+          <View key={language.id} style={{ width: '48%', marginBottom: 16 }}>
+            <LanguageCheckbox
+              id={language.id}
+              name={language.name}
+              emoji={language.emoji}
+              isSelected={selectedLanguage === language.id}
+              available={language.available}
+              onSelect={handleLanguageSelect}
             />
-            <Text className="text-primary-600 text-base font-JakartaMedium">Back</Text>
-          </TouchableOpacity>
-          
-          {/* Progress bar placeholder */}
-          <View className="flex-1 mx-4">
-            {/* scrollbar implementation goes here */}
           </View>
-        </View>
-
-        {/* Content */}
-        <View className="flex-1">
-          {/* Title and Subtitle */}
-          <View className="mb-8">
-            <Text className="text-2xl font-JakartaBold text-text-primary text-center mb-4">
-              What's Your Native Language?
-            </Text>
-            <Text className="text-base font-Jakarta text-text-secondary text-center px-4">
-              This will help our tutors explain concepts to you in your mother tongue
-            </Text>
-          </View>
-
-          {/* Language Options - Scrollable Grid */}
-          <View className="flex-1">
-            <ScrollView 
-              contentContainerStyle={{ flexGrow: 1, paddingBottom: 20 }}
-              showsVerticalScrollIndicator={false}
-            >
-              <View className="flex-row flex-wrap justify-between">
-                {nativeLanguages.map((language) => (
-                  <View key={language.id} style={{ width: '48%', marginBottom: 16 }}>
-                    <LanguageCheckbox
-                      id={language.id}
-                      name={language.name}
-                      emoji={language.emoji}
-                      isSelected={selectedLanguage === language.id}
-                      available={language.available}
-                      onSelect={handleLanguageSelect}
-                    />
-                  </View>
-                ))}
-              </View>
-            </ScrollView>
-          </View>
-        </View>
-
-        {/* Continue Button */}
-        <View className="pb-8">
-          {error && (
-            <Text className="text-functional-error text-sm text-center mb-4">
-              {error}
-            </Text>
-          )}
-          <CustomButton
-            title="Continue"
-            onPress={handleContinue}
-            bgVariant="primary"
-            disabled={!selectedLanguage || isLoading}
-            className={`${!selectedLanguage || isLoading ? 'opacity-50' : ''}`}
-          />
-        </View>
+        ))}
       </View>
-    </SafeAreaView>
+    </OnboardingSelectionTemplate>
   );
 };
 

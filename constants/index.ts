@@ -148,25 +148,37 @@ export const industries = [
   {
     id: 'banking_finance',
     name: 'Banking & Finance',
-    icon: 'dollar',
+    icon: {
+      library: 'ionicons' as const,
+      name: 'cash-outline' as const,
+    },
     available: true,
   },
   {
     id: 'shipping_logistics',
     name: 'Shipping & Logistics',
-    icon: 'target',
+    icon: {
+      library: 'ionicons' as const,
+      name: 'airplane-outline' as const,
+    },
     available: true,
   },
   {
     id: 'real_estate',
     name: 'Real Estate',
-    icon: 'home',
+    icon: {
+      library: 'ionicons' as const,
+      name: 'home-outline' as const,
+    },
     available: true,
   },
   {
     id: 'hotels_hospitality',
     name: 'Hotels & Hospitality',
-    icon: 'star',
+    icon: {
+      library: 'ionicons' as const,
+      name: 'bed-outline' as const,
+    },
     available: true,
   },
 ];
