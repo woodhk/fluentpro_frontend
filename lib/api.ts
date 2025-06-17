@@ -215,6 +215,15 @@ class ApiClient {
   async getOnboardingSummary(): Promise<OnboardingSummaryResponse> {
     return this.makeRequest('/onboarding/part-3/summary');
   }
+
+  /**
+   * Complete the entire onboarding process
+   */
+  async completeOnboarding(): Promise<{ success: boolean; message: string; onboarding_status: string; next_steps: string }> {
+    return this.makeRequest('/onboarding/part-3/complete', {
+      method: 'POST',
+    });
+  }
 }
 
 export const apiClient = new ApiClient();

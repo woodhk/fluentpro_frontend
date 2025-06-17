@@ -492,6 +492,53 @@ export const part3SummaryData = {
   },
 };
 
+// Part 3 completion screens data
+export const part3CompletionScreens = [
+  {
+    id: 1,
+    title: "Time is precious, and that's why Fluentpro lessons are an average of just 5 minutes long!",
+    description: "You can pause any time, and when you're ready to restart, it's super easy to pick up from right where you left off!",
+    image: images.onboarding2,
+  },
+  {
+    id: 2,
+    title: "We all find it hard to stay motivated sometimes! 🤩",
+    description: "We have fun monthly challenges with prizes, smart methods to review, and great ways to track your progress\n\nMost importantly, our lessons are designed to keep you interested!",
+    image: images.onboarding2,
+  },
+  {
+    id: 3,
+    title: "Finding opportunities to practice English is hard!",
+    description: "This is why we built Fluentpro: To make the experience of speaking with someone face-to-face something you can do anytime, anywhere!",
+    image: images.onboarding2,
+  },
+  {
+    id: 4,
+    title: "Why learn something if you can't remember it?",
+    description: "At Fluentpro, we've built proven methods that will not only help you to learn new words and concepts, but to also remember them down the road!",
+    image: images.onboarding2,
+  },
+  {
+    id: 5,
+    title: "You can and will build confidence over time 💪",
+    description: "With Fluentpro, you can practice conversational English with our Fluentpro Tutor\n\nThe next time you need to speak English at work, you won't be stuck at 'Hello'.",
+    image: images.onboarding2,
+  },
+  {
+    id: 6,
+    title: "Fluentpro is designed for any job role in any industry",
+    description: "Our thousands of lessons cover all experiences and topics you encounter at work. We make sure all content is relevant for {role} in the {industry} industry and concepts are explained clearly for you!\n\nYou are capable of it, and it WILL be fun and rewarding!",
+    image: images.onboarding2,
+  },
+  {
+    id: 7,
+    title: "Let's get Started!",
+    description: "You are all set up to start practicing real workplace conversations a {role} in {industry} industry will experience\n\nLet's get started in turning you into a Fluent Professional!",
+    image: images.onboarding2,
+    buttonText: "Enter Fluentpro",
+  },
+];
+
 export const data = {
     welcome,
     nativeLanguages,
@@ -502,4 +549,5 @@ export const data = {
     part3SummaryData,
     communicationPartners,
     communicationSituations,
+    part3CompletionScreens,
 };
