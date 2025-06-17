@@ -121,4 +121,50 @@ declare interface SituationCheckboxProps {
     onSelect: (id: string) => void;
 }
 
+declare interface OnboardingSummary {
+    native_language: string;
+    native_language_display: string;
+    industry_id: string;
+    industry_name: string;
+    role: {
+        id: string;
+        title: string;
+        description: string;
+        is_custom: boolean;
+        industry_name: string;
+    };
+    communication_partners: {
+        id: string;
+        name: string;
+        description: string;
+        priority: number;
+        situations: {
+            id: string;
+            name: string;
+            description: string;
+            priority: number;
+        }[];
+    }[];
+    total_partners: number;
+    total_situations: number;
+    onboarding_status: string;
+    is_complete: boolean;
+}
+
+declare interface OnboardingSummaryResponse {
+    success: boolean;
+    message: string;
+    summary: OnboardingSummary;
+}
+
+declare interface SummaryDisplayItem {
+    title: string;
+    value: string;
+    icon: {
+        library: 'ionicons' | 'material' | 'feather' | 'font-awesome' | 'material-community' | 'ant-design' | 'entypo' | 'font-awesome-5';
+        name: string;
+    };
+    bgColor: string;
+}
+
 

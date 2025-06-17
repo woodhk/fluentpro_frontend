@@ -1,5 +1,5 @@
 // lib/api.ts
-import { SignUpRequest, SignInRequest, AuthResponse, User, ApiError, LoginResponse, RoleSearchRequest, RoleSearchResponse, RoleSelectionRequest, RoleSelectionResponse, CommunicationPartnersResponse, CommunicationPartnerSelectionRequest, CommunicationPartnerSelectionResponse, SituationSelectionRequest, SituationSelectionResponse } from './types';
+import { SignUpRequest, SignInRequest, AuthResponse, User, ApiError, LoginResponse, RoleSearchRequest, RoleSearchResponse, RoleSelectionRequest, RoleSelectionResponse, CommunicationPartnersResponse, CommunicationPartnerSelectionRequest, CommunicationPartnerSelectionResponse, SituationSelectionRequest, SituationSelectionResponse, OnboardingSummaryResponse } from './types';
 import { storage } from './storage';
 
 const API_BASE_URL = 'https://fluentpro-backend.onrender.com/api/v1';
@@ -207,6 +207,13 @@ class ApiClient {
       method: 'POST',
       body: JSON.stringify(selectionData),
     });
+  }
+
+  /**
+   * Get onboarding summary for part 3
+   */
+  async getOnboardingSummary(): Promise<OnboardingSummaryResponse> {
+    return this.makeRequest('/onboarding/part-3/summary');
   }
 }
 

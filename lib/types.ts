@@ -166,3 +166,46 @@ export interface SituationSelectionResponse {
   selected_count: number;
   situation_selections: SituationSelection[];
 }
+
+// Onboarding Summary types for Part 3
+export interface OnboardingSummaryRole {
+  id: string;
+  title: string;
+  description: string;
+  is_custom: boolean;
+  industry_name: string;
+}
+
+export interface OnboardingSummarySituation {
+  id: string;
+  name: string;
+  description: string;
+  priority: number;
+}
+
+export interface OnboardingSummaryPartner {
+  id: string;
+  name: string;
+  description: string;
+  priority: number;
+  situations: OnboardingSummarySituation[];
+}
+
+export interface OnboardingSummary {
+  native_language: string;
+  native_language_display: string;
+  industry_id: string;
+  industry_name: string;
+  role: OnboardingSummaryRole;
+  communication_partners: OnboardingSummaryPartner[];
+  total_partners: number;
+  total_situations: number;
+  onboarding_status: string;
+  is_complete: boolean;
+}
+
+export interface OnboardingSummaryResponse {
+  success: boolean;
+  message: string;
+  summary: OnboardingSummary;
+}

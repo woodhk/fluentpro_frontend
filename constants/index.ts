@@ -456,6 +456,42 @@ export const part2SummaryData = {
   },
 };
 
+// Part 3 final summary data for completion screen
+export const part3SummaryData = {
+  nativeLanguage: {
+    title: 'Native Language',
+    icon: {
+      library: 'ionicons' as const,
+      name: 'language-outline' as const,
+    },
+    bgColor: '#6366F1', // Indigo
+  },
+  industry: {
+    title: 'Industry',
+    icon: {
+      library: 'ionicons' as const,
+      name: 'business-outline' as const,
+    },
+    bgColor: '#F59E0B', // Amber
+  },
+  role: {
+    title: 'Role',
+    icon: {
+      library: 'ionicons' as const,
+      name: 'person-outline' as const,
+    },
+    bgColor: '#10B981', // Emerald
+  },
+  partners: {
+    title: 'Partners',
+    icon: {
+      library: 'ionicons' as const,
+      name: 'people-outline' as const,
+    },
+    bgColor: '#8B5CF6', // Purple
+  },
+};
+
 export const data = {
     welcome,
     nativeLanguages,
@@ -463,6 +499,7 @@ export const data = {
     roles,
     summaryData,
     part2SummaryData,
+    part3SummaryData,
     communicationPartners,
     communicationSituations,
 };
