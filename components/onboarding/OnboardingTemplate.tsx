@@ -16,7 +16,6 @@ interface OnboardingTemplateProps {
   secondaryButtonText?: string;
   onSecondaryPress?: () => void;
   showBackButton?: boolean;
-  onBackPress?: () => void;
   progress?: number; // Value between 0 and 1
 }
 
@@ -30,7 +29,6 @@ const OnboardingTemplate: React.FC<OnboardingTemplateProps> = ({
   secondaryButtonText,
   onSecondaryPress,
   showBackButton = true,
-  onBackPress,
   progress = 0,
 }) => {
   const router = useRouter();
@@ -42,7 +40,7 @@ const OnboardingTemplate: React.FC<OnboardingTemplateProps> = ({
         <View className="h-16 flex-row items-center justify-between">
           {showBackButton ? (
             <TouchableOpacity
-              onPress={onBackPress || (() => router.back())}
+              onPress={() => router.back()}
               className="w-10 h-10 items-center justify-center"
             >
               <Icon library="ionicons" name="chevron-back" size={24} color="#374151" />

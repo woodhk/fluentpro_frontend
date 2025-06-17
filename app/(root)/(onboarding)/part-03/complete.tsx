@@ -97,8 +97,7 @@ const PartThreeComplete = () => {
         (isCompleting ? 'Completing...' : 'Continue')
       }
       onPrimaryPress={handleContinue}
-      showBackButton={currentScreen > 0}
-      onBackPress={handleBack}
+      showBackButton={false}
     />
   );
 };
