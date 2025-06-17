@@ -78,22 +78,27 @@ const NativeLanguageScreen = () => {
             </Text>
           </View>
 
-          {/* Language Options - 2x3 Grid */}
+          {/* Language Options - Scrollable Grid */}
           <View className="flex-1">
-            <View className="flex-row flex-wrap justify-between">
-              {nativeLanguages.map((language) => (
-                <View key={language.id} style={{ width: '48%', marginBottom: 16 }}>
-                  <LanguageCheckbox
-                    id={language.id}
-                    name={language.name}
-                    emoji={language.emoji}
-                    isSelected={selectedLanguage === language.id}
-                    available={language.available}
-                    onSelect={handleLanguageSelect}
-                  />
-                </View>
-              ))}
-            </View>
+            <ScrollView 
+              contentContainerStyle={{ flexGrow: 1, paddingBottom: 20 }}
+              showsVerticalScrollIndicator={false}
+            >
+              <View className="flex-row flex-wrap justify-between">
+                {nativeLanguages.map((language) => (
+                  <View key={language.id} style={{ width: '48%', marginBottom: 16 }}>
+                    <LanguageCheckbox
+                      id={language.id}
+                      name={language.name}
+                      emoji={language.emoji}
+                      isSelected={selectedLanguage === language.id}
+                      available={language.available}
+                      onSelect={handleLanguageSelect}
+                    />
+                  </View>
+                ))}
+              </View>
+            </ScrollView>
           </View>
         </View>
 
