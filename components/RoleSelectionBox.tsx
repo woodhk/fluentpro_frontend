@@ -30,9 +30,9 @@ const RoleSelectionBox: React.FC<RoleSelectionBoxProps> = ({
       `}
     >
       {/* Header with title and match percentage */}
-      <View className="flex-row items-center justify-between mb-2">
+      <View className="flex-row items-center mb-2">
         <Text className={`
-          text-lg font-JakartaSemiBold flex-1 mr-2
+          text-lg font-JakartaSemiBold mr-2
           ${isSelected ? 'text-primary-600' : 'text-text-primary'}
         `}>
           {role.title}
@@ -40,8 +40,8 @@ const RoleSelectionBox: React.FC<RoleSelectionBoxProps> = ({
         
         {/* Best Match Badge */}
         {role.confidence_score >= 0.7 && (
-          <View className="bg-accent-100 px-2 py-1 rounded-full">
-            <Text className="text-accent-600 text-xs font-JakartaMedium">
+          <View className="bg-green-100 px-2 py-1 rounded-md">
+            <Text className="text-green-600 text-xs font-JakartaMedium">
               Best Match
             </Text>
           </View>
