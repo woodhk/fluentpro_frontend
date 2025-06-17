@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { apiClient } from '../api';
+import { RoleMatch, RoleSearchRequest, RoleSelectionRequest } from '../types';
 
 export type NativeLanguage = 'english' | 'chinese_traditional' | 'chinese_simplified';
 export type Industry = 'banking_finance' | 'shipping_logistics' | 'real_estate' | 'hotels_hospitality';
@@ -8,9 +9,15 @@ interface OnboardingState {
   // Part 1 data
   nativeLanguage: NativeLanguage | null;
   industry: Industry | null;
+  jobTitle: string;
+  jobDescription: string;
+  roleMatches: RoleMatch[];
+  selectedRole: RoleMatch | null;
+  customRole: { title: string; description: string } | null;
   
   // API states
   isLoading: boolean;
+  isSearchingRoles: boolean;
   error: string | null;
   
   // Progress tracking
@@ -22,7 +29,13 @@ interface OnboardingState {
 const initialState: OnboardingState = {
   nativeLanguage: null,
   industry: null,
+  jobTitle: '',
+  jobDescription: '',
+  roleMatches: [],
+  selectedRole: null,
+  customRole: null,
   isLoading: false,
+  isSearchingRoles: false,
   error: null,
   part1Complete: false,
   part2Complete: false,
@@ -55,6 +68,32 @@ export const setIndustry = createAsyncThunk(
   }
 );
 
+// Async thunk for searching roles
+export const searchRoles = createAsyncThunk(
+  'onboarding/searchRoles',
+  async (searchData: RoleSearchRequest, { rejectWithValue }) => {
+    try {
+      const response = await apiClient.searchRoles(searchData);
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(error.message || 'Failed to search roles');
+    }
+  }
+);
+
+// Async thunk for selecting a role
+export const selectRole = createAsyncThunk(
+  'onboarding/selectRole',
+  async (selectionData: RoleSelectionRequest, { rejectWithValue }) => {
+    try {
+      const response = await apiClient.selectRole(selectionData);
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(error.message || 'Failed to select role');
+    }
+  }
+);
+
 const onboardingSlice = createSlice({
   name: 'onboarding',
   initialState,
@@ -65,6 +104,31 @@ const onboardingSlice = createSlice({
     },
     updateIndustry: (state, action: PayloadAction<Industry>) => {
       state.industry = action.payload;
+    },
+    updateJobTitle: (state, action: PayloadAction<string>) => {
+      state.jobTitle = action.payload;
+    },
+    updateJobDescription: (state, action: PayloadAction<string>) => {
+      state.jobDescription = action.payload;
+    },
+    updateSelectedRole: (state, action: PayloadAction<RoleMatch | null>) => {
+      state.selectedRole = action.payload;
+      // Clear custom role when selecting a predefined role
+      if (action.payload) {
+        state.customRole = null;
+      }
+    },
+    updateCustomRole: (state, action: PayloadAction<{ title: string; description: string } | null>) => {
+      state.customRole = action.payload;
+      // Clear selected role when setting custom role
+      if (action.payload) {
+        state.selectedRole = null;
+      }
+    },
+    clearRoleMatches: (state) => {
+      state.roleMatches = [];
+      state.selectedRole = null;
+      state.customRole = null;
     },
     clearError: (state) => {
       state.error = null;
@@ -102,9 +166,49 @@ const onboardingSlice = createSlice({
       .addCase(setIndustry.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
+      })
+      // Role search cases
+      .addCase(searchRoles.pending, (state) => {
+        state.isSearchingRoles = true;
+        state.error = null;
+      })
+      .addCase(searchRoles.fulfilled, (state, action) => {
+        state.isSearchingRoles = false;
+        state.roleMatches = action.payload.matches;
+        state.error = null;
+      })
+      .addCase(searchRoles.rejected, (state, action) => {
+        state.isSearchingRoles = false;
+        state.error = action.payload as string;
+        state.roleMatches = [];
+      })
+      // Role selection cases
+      .addCase(selectRole.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(selectRole.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error = null;
+        // Mark part 1 as complete when role is selected
+        state.part1Complete = true;
+      })
+      .addCase(selectRole.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
       });
   },
 });
 
-export const { updateNativeLanguage, updateIndustry, clearError, resetOnboarding } = onboardingSlice.actions;
+export const { 
+  updateNativeLanguage, 
+  updateIndustry, 
+  updateJobTitle, 
+  updateJobDescription, 
+  updateSelectedRole, 
+  updateCustomRole, 
+  clearRoleMatches, 
+  clearError, 
+  resetOnboarding 
+} = onboardingSlice.actions;
 export default onboardingSlice.reducer;

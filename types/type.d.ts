@@ -62,4 +62,10 @@ declare interface OptionBoxProps {
     onSelect: (id: string) => void;
 }
 
+declare interface RoleSelectionBoxProps {
+    role: import('@/lib/types').RoleMatch;
+    isSelected: boolean;
+    onSelect: (role: import('@/lib/types').RoleMatch) => void;
+}
+
 

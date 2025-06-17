@@ -71,3 +71,37 @@ export interface AppStackParamList {
   home: undefined;
   onboarding: undefined;
 }
+
+// Role-related types for onboarding
+export interface RoleMatch {
+  id: string;
+  title: string;
+  description: string;
+  industry_name: string;
+  confidence_score: number;
+}
+
+export interface RoleSearchRequest {
+  job_title: string;
+  job_description: string;
+}
+
+export interface RoleSearchResponse {
+  success: boolean;
+  message: string;
+  matches: RoleMatch[];
+  search_id: string | null;
+}
+
+export interface RoleSelectionRequest {
+  role_id?: string;
+  custom_title?: string;
+  custom_description?: string;
+}
+
+export interface RoleSelectionResponse {
+  success: boolean;
+  message: string;
+  role_id: string;
+  is_custom: boolean;
+}

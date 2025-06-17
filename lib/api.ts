@@ -1,5 +1,5 @@
 // lib/api.ts
-import { SignUpRequest, SignInRequest, AuthResponse, User, ApiError, LoginResponse } from './types';
+import { SignUpRequest, SignInRequest, AuthResponse, User, ApiError, LoginResponse, RoleSearchRequest, RoleSearchResponse, RoleSelectionRequest, RoleSelectionResponse } from './types';
 import { storage } from './storage';
 
 const API_BASE_URL = 'https://fluentpro-backend.onrender.com/api/v1';
@@ -159,6 +159,26 @@ class ApiClient {
     return this.makeRequest('/onboarding/part-1/industry', {
       method: 'POST',
       body: JSON.stringify({ industry }),
+    });
+  }
+
+  /**
+   * Search for roles based on job title and description
+   */
+  async searchRoles(searchData: RoleSearchRequest): Promise<RoleSearchResponse> {
+    return this.makeRequest('/onboarding/part-1/search-roles', {
+      method: 'POST',
+      body: JSON.stringify(searchData),
+    });
+  }
+
+  /**
+   * Select a role or create a custom role
+   */
+  async selectRole(selectionData: RoleSelectionRequest): Promise<RoleSelectionResponse> {
+    return this.makeRequest('/onboarding/part-1/select-role', {
+      method: 'POST',
+      body: JSON.stringify(selectionData),
     });
   }
 }
