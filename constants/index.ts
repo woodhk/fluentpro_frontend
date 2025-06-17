@@ -97,6 +97,32 @@ export const welcome = [
     },
 ];
 
+// Native language options for onboarding
+export const nativeLanguages = [
+  {
+    id: 'english',
+    code: 'en',
+    name: 'English',
+    nativeName: 'English',
+    flagCode: 'us',
+  },
+  {
+    id: 'chinese_simplified',
+    code: 'zh-hans',
+    name: 'Chinese Simplified',
+    nativeName: '简体中文',
+    flagCode: 'cn',
+  },
+  {
+    id: 'chinese_traditional',
+    code: 'zh-hant',
+    name: 'Chinese Traditional',
+    nativeName: '繁體中文',
+    flagCode: 'tw',
+  },
+];
+
 export const data = {
     welcome,
+    nativeLanguages,
 };

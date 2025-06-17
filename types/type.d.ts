@@ -22,4 +22,22 @@ declare interface InputFieldProps extends TextInputProps {
     className?: string;
 }
 
+declare interface LanguageOption {
+    id: string;
+    code: string;
+    name: string;
+    nativeName: string;
+    flagCode: string;
+}
+
+declare interface LanguageCheckboxProps {
+    id: string;
+    name: string;
+    nativeName: string;
+    flagUrl?: string;
+    icon?: any;
+    isSelected: boolean;
+    onSelect: (id: string) => void;
+}
+
 

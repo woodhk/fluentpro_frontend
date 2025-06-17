@@ -17,10 +17,16 @@ export const LANGUAGES: Language[] = [
   
   // Common Asian Languages
   {
-    code: 'zh',
-    name: 'Chinese',
-    nativeName: 'Chinese',
+    code: 'zh-hans',
+    name: 'Chinese Simplified',
+    nativeName: '简体中文',
     flagCode: 'cn',
+  },
+  {
+    code: 'zh-hant',
+    name: 'Chinese Traditional', 
+    nativeName: '繁體中文',
+    flagCode: 'tw',
   },
   {
     code: 'ja',

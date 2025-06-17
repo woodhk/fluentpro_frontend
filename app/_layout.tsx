@@ -2,6 +2,8 @@
 import React from 'react';
 import { Stack } from "expo-router";
 import { useFonts } from 'expo-font';
+import { Provider } from 'react-redux';
+import { store } from '../lib/store';
 import './globals.css';
 
 export default function RootLayout() {
@@ -20,12 +22,12 @@ export default function RootLayout() {
   }
 
   return (
-    <>
+    <Provider store={store}>
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="index" />
         <Stack.Screen name="(auth)" />
         <Stack.Screen name="(root)" />
       </Stack>
-    </>
+    </Provider>
   );
 }

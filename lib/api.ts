@@ -94,7 +94,7 @@ class ApiClient {
   }
 
   /**
-   * Sign in user - REAL IMPLEMENTATION with debugging
+   * Sign in user
    */
   async signIn(signInData: SignInRequest): Promise<LoginResponse> {
     console.log('Attempting login with data:', {
@@ -130,6 +130,20 @@ class ApiClient {
    */
   async verifyToken(): Promise<{ valid: boolean; auth0_id: string; message: string }> {
     return this.makeRequest('/auth/verify');
+  }
+
+  /**
+   * Set user's native language for onboarding
+   */
+  async setNativeLanguage(language: 'english' | 'chinese_traditional' | 'chinese_simplified'): Promise<{
+    success: boolean;
+    message: string;
+    native_language: string;
+  }> {
+    return this.makeRequest('/onboarding/part-1/native-language', {
+      method: 'POST',
+      body: JSON.stringify({ native_language: language }),
+    });
   }
 }
 
