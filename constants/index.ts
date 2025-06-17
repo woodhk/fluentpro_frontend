@@ -245,10 +245,78 @@ export const summaryData = {
   },
 };
 
+// Communication partners for onboarding part 2
+export const communicationPartners = [
+  {
+    id: 'clients',
+    name: 'Clients',
+    description: 'External customers or clients',
+    icon: {
+      library: 'ionicons' as const,
+      name: 'people-outline' as const,
+    },
+  },
+  {
+    id: 'senior_management',
+    name: 'Senior Management',
+    description: 'Company leadership and executives',
+    icon: {
+      library: 'ionicons' as const,
+      name: 'business-outline' as const,
+    },
+  },
+  {
+    id: 'suppliers',
+    name: 'Suppliers',
+    description: 'External suppliers and vendors',
+    icon: {
+      library: 'ionicons' as const,
+      name: 'construct-outline' as const,
+    },
+  },
+  {
+    id: 'customers',
+    name: 'Customers',
+    description: 'End customers and consumers',
+    icon: {
+      library: 'ionicons' as const,
+      name: 'person-circle-outline' as const,
+    },
+  },
+  {
+    id: 'colleagues',
+    name: 'Colleagues',
+    description: 'Team members and coworkers',
+    icon: {
+      library: 'ionicons' as const,
+      name: 'people-circle-outline' as const,
+    },
+  },
+  {
+    id: 'stakeholders',
+    name: 'Stakeholders',
+    description: 'Project stakeholders and interested parties',
+    icon: {
+      library: 'ionicons' as const,
+      name: 'git-network-outline' as const,
+    },
+  },
+  {
+    id: 'partners',
+    name: 'Partners',
+    description: 'Business partners and collaborators',
+    icon: {
+      library: 'ionicons' as const,
+      name: 'link-outline' as const,
+    },
+  },
+];
+
 export const data = {
     welcome,
     nativeLanguages,
     industries,
     roles,
     summaryData,
+    communicationPartners,
 };

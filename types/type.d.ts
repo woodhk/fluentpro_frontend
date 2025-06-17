@@ -79,4 +79,26 @@ declare interface SummaryItemProps {
     isLast?: boolean;
 }
 
+declare interface CommunicationPartner {
+    id: string;
+    name: string;
+    description?: string;
+    icon: {
+        library: string;
+        name: string;
+    };
+}
+
+declare interface CommunicationPartnerCheckboxProps {
+    id: string;
+    name: string;
+    description?: string;
+    icon: {
+        library: string;
+        name: string;
+    };
+    isSelected: boolean;
+    onSelect: (id: string) => void;
+}
+
 

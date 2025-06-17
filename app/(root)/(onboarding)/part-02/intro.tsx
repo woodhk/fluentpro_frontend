@@ -33,7 +33,7 @@ const PartTwoIntro = () => {
   };
 
   const handleContinue = () => {
-    router.push('/(root)/(onboarding)/part-02/situations');
+    router.push('/(root)/(onboarding)/part-02/partners');
   };
 
   return (

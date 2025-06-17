@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { apiClient } from '../api';
-import { RoleMatch, RoleSearchRequest, RoleSelectionRequest } from '../types';
+import { RoleMatch, RoleSearchRequest, RoleSelectionRequest, CommunicationPartnerAPI, CommunicationPartnerSelectionRequest } from '../types';
 
 export type NativeLanguage = 'english' | 'chinese_traditional' | 'chinese_simplified';
 export type Industry = 'banking_finance' | 'shipping_logistics' | 'real_estate' | 'hotels_hospitality';
@@ -15,9 +15,14 @@ interface OnboardingState {
   selectedRole: RoleMatch | null;
   customRole: { title: string; description: string } | null;
   
+  // Part 2 data
+  availablePartners: CommunicationPartnerAPI[];
+  selectedPartners: string[];
+  
   // API states
   isLoading: boolean;
   isSearchingRoles: boolean;
+  isLoadingPartners: boolean;
   error: string | null;
   
   // Progress tracking
@@ -34,8 +39,11 @@ const initialState: OnboardingState = {
   roleMatches: [],
   selectedRole: null,
   customRole: null,
+  availablePartners: [],
+  selectedPartners: [],
   isLoading: false,
   isSearchingRoles: false,
+  isLoadingPartners: false,
   error: null,
   part1Complete: false,
   part2Complete: false,
@@ -94,6 +102,32 @@ export const selectRole = createAsyncThunk(
   }
 );
 
+// Async thunk for fetching available communication partners
+export const fetchCommunicationPartners = createAsyncThunk(
+  'onboarding/fetchCommunicationPartners',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await apiClient.getCommunicationPartners();
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(error.message || 'Failed to fetch communication partners');
+    }
+  }
+);
+
+// Async thunk for selecting communication partners
+export const selectCommunicationPartners = createAsyncThunk(
+  'onboarding/selectCommunicationPartners',
+  async (selectionData: CommunicationPartnerSelectionRequest, { rejectWithValue }) => {
+    try {
+      const response = await apiClient.selectCommunicationPartners(selectionData);
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(error.message || 'Failed to select communication partners');
+    }
+  }
+);
+
 const onboardingSlice = createSlice({
   name: 'onboarding',
   initialState,
@@ -123,6 +157,17 @@ const onboardingSlice = createSlice({
       // Clear selected role when setting custom role
       if (action.payload) {
         state.selectedRole = null;
+      }
+    },
+    updateSelectedPartners: (state, action: PayloadAction<string[]>) => {
+      state.selectedPartners = action.payload;
+    },
+    togglePartnerSelection: (state, action: PayloadAction<string>) => {
+      const partnerId = action.payload;
+      if (state.selectedPartners.includes(partnerId)) {
+        state.selectedPartners = state.selectedPartners.filter(id => id !== partnerId);
+      } else {
+        state.selectedPartners.push(partnerId);
       }
     },
     clearRoleMatches: (state) => {
@@ -196,6 +241,35 @@ const onboardingSlice = createSlice({
       .addCase(selectRole.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
+      })
+      // Communication partners fetch cases
+      .addCase(fetchCommunicationPartners.pending, (state) => {
+        state.isLoadingPartners = true;
+        state.error = null;
+      })
+      .addCase(fetchCommunicationPartners.fulfilled, (state, action) => {
+        state.isLoadingPartners = false;
+        state.availablePartners = action.payload.partners;
+        state.error = null;
+      })
+      .addCase(fetchCommunicationPartners.rejected, (state, action) => {
+        state.isLoadingPartners = false;
+        state.error = action.payload as string;
+      })
+      // Communication partners selection cases
+      .addCase(selectCommunicationPartners.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(selectCommunicationPartners.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error = null;
+        // Mark part 2 as complete when partners are selected
+        state.part2Complete = true;
+      })
+      .addCase(selectCommunicationPartners.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
       });
   },
 });
@@ -207,6 +281,8 @@ export const {
   updateJobDescription, 
   updateSelectedRole, 
   updateCustomRole, 
+  updateSelectedPartners,
+  togglePartnerSelection,
   clearRoleMatches, 
   clearError, 
   resetOnboarding 

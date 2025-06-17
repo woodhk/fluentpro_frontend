@@ -105,3 +105,33 @@ export interface RoleSelectionResponse {
   role_id: string;
   is_custom: boolean;
 }
+
+// Communication Partners types for Part 2
+export interface CommunicationPartnerAPI {
+  id: string;
+  name: string;
+  description: string;
+}
+
+export interface CommunicationPartnersResponse {
+  success: boolean;
+  message: string;
+  partners: CommunicationPartnerAPI[];
+}
+
+export interface CommunicationPartnerSelectionRequest {
+  partner_ids: string[];
+}
+
+export interface CommunicationPartnerSelection {
+  user_id: string;
+  communication_partner_id: string;
+  priority: number;
+}
+
+export interface CommunicationPartnerSelectionResponse {
+  success: boolean;
+  message: string;
+  selected_count: number;
+  partner_selections: CommunicationPartnerSelection[];
+}

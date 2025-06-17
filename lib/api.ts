@@ -1,5 +1,5 @@
 // lib/api.ts
-import { SignUpRequest, SignInRequest, AuthResponse, User, ApiError, LoginResponse, RoleSearchRequest, RoleSearchResponse, RoleSelectionRequest, RoleSelectionResponse } from './types';
+import { SignUpRequest, SignInRequest, AuthResponse, User, ApiError, LoginResponse, RoleSearchRequest, RoleSearchResponse, RoleSelectionRequest, RoleSelectionResponse, CommunicationPartnersResponse, CommunicationPartnerSelectionRequest, CommunicationPartnerSelectionResponse } from './types';
 import { storage } from './storage';
 
 const API_BASE_URL = 'https://fluentpro-backend.onrender.com/api/v1';
@@ -177,6 +177,23 @@ class ApiClient {
    */
   async selectRole(selectionData: RoleSelectionRequest): Promise<RoleSelectionResponse> {
     return this.makeRequest('/onboarding/part-1/select-role', {
+      method: 'POST',
+      body: JSON.stringify(selectionData),
+    });
+  }
+
+  /**
+   * Get available communication partners for onboarding part 2
+   */
+  async getCommunicationPartners(): Promise<CommunicationPartnersResponse> {
+    return this.makeRequest('/onboarding/part-2/communication-partners');
+  }
+
+  /**
+   * Select communication partners for onboarding part 2
+   */
+  async selectCommunicationPartners(selectionData: CommunicationPartnerSelectionRequest): Promise<CommunicationPartnerSelectionResponse> {
+    return this.makeRequest('/onboarding/part-2/select-partners', {
       method: 'POST',
       body: JSON.stringify(selectionData),
     });
