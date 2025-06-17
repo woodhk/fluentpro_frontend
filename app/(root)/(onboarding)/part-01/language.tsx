@@ -20,9 +20,12 @@ const NativeLanguageScreen = () => {
   const [selectedLanguage, setSelectedLanguage] = useState<string | null>(nativeLanguage);
 
   const handleLanguageSelect = (languageId: string) => {
-    setSelectedLanguage(languageId);
-    // Optimistically update local state
-    dispatch(updateNativeLanguage(languageId as NativeLanguage));
+    const language = nativeLanguages.find(lang => lang.id === languageId);
+    if (language && language.available) {
+      setSelectedLanguage(languageId);
+      // Optimistically update local state
+      dispatch(updateNativeLanguage(languageId as NativeLanguage));
+    }
   };
 
   const handleContinue = async () => {
@@ -75,27 +78,23 @@ const NativeLanguageScreen = () => {
             </Text>
           </View>
 
-          {/* Language Options */}
-          <ScrollView 
-            className="flex-1"
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ paddingBottom: 20 }}
-          >
+          {/* Language Options - 2x3 Grid */}
+          <View className="flex-1">
             <View className="flex-row flex-wrap justify-between">
               {nativeLanguages.map((language) => (
-                <View key={language.id} style={{ width: '48%', marginBottom: 12 }}>
+                <View key={language.id} style={{ width: '48%', marginBottom: 16 }}>
                   <LanguageCheckbox
                     id={language.id}
                     name={language.name}
-                    nativeName={language.nativeName}
                     emoji={language.emoji}
                     isSelected={selectedLanguage === language.id}
+                    available={language.available}
                     onSelect={handleLanguageSelect}
                   />
                 </View>
               ))}
             </View>
-          </ScrollView>
+          </View>
         </View>
 
         {/* Continue Button */}

@@ -5,78 +5,81 @@ import { icons } from '@/constants';
 interface LanguageCheckboxProps {
   id: string;
   name: string;
-  nativeName: string;
   emoji?: string;
   icon?: any; // For icon-based options in future screens
   isSelected: boolean;
+  available: boolean;
   onSelect: (id: string) => void;
 }
 
 const LanguageCheckbox: React.FC<LanguageCheckboxProps> = ({
   id,
   name,
-  nativeName,
   emoji,
   icon,
   isSelected,
+  available,
   onSelect,
 }) => {
+  const handlePress = () => {
+    if (available) {
+      onSelect(id);
+    }
+  };
+
   return (
     <TouchableOpacity
-      onPress={() => onSelect(id)}
+      onPress={handlePress}
+      disabled={!available}
       className={`
-        flex-row items-center p-4 rounded-lg border-2 mb-3
-        ${isSelected 
+        flex-col items-center justify-center p-6 rounded-xl border-2 
+        ${isSelected && available
           ? 'border-primary-600 bg-primary-50' 
-          : 'border-light-300 bg-white'
+          : available
+          ? 'border-light-300 bg-white'
+          : 'border-light-200 bg-light-100'
         }
       `}
+      style={{ 
+        aspectRatio: 1,
+        opacity: available ? 1 : 0.5 
+      }}
     >
       {/* Emoji or Icon */}
-      <View className="w-12 h-12 rounded-full bg-light-200 mr-4 justify-center items-center">
+      <View className="justify-center items-center mb-4">
         {emoji ? (
-          <Text className="text-2xl">
+          <Text className="text-4xl">
             {emoji}
           </Text>
         ) : icon ? (
           <Image 
             source={icon} 
-            className="w-6 h-6"
-            style={{ tintColor: '#666666' }}
+            className="w-10 h-10"
+            style={{ tintColor: available ? '#666666' : '#CCCCCC' }}
           />
         ) : (
-          <View className="w-8 h-6 bg-light-300 rounded" />
+          <View className="w-10 h-10 bg-light-300 rounded" />
         )}
       </View>
       
       {/* Language Text */}
-      <View className="flex-1">
-        <Text className="text-base font-JakartaMedium text-text-primary">
-          {name}
-        </Text>
-        {nativeName !== name && (
-          <Text className="text-sm font-Jakarta text-text-secondary mt-1">
-            {nativeName}
-          </Text>
-        )}
-      </View>
-      
-      {/* Checkmark */}
-      <View className={`
-        w-6 h-6 rounded-full border-2 justify-center items-center
-        ${isSelected 
-          ? 'border-primary-600 bg-primary-600' 
-          : 'border-light-300 bg-white'
-        }
+      <Text className={`
+        text-base font-JakartaMedium text-center
+        ${available ? 'text-text-primary' : 'text-text-secondary'}
       `}>
-        {isSelected && (
+        {name}
+      </Text>
+      
+      {/* Lock icon for unavailable languages */}
+      {!available && (
+        <View className="absolute top-2 right-2">
           <Image 
-            source={icons.checkmark} 
-            className="w-3 h-3"
-            style={{ tintColor: '#FFFFFF' }}
+            source={icons.lock} 
+            className="w-4 h-4"
+            style={{ tintColor: '#CCCCCC' }}
           />
-        )}
-      </View>
+        </View>
+      )}
     </TouchableOpacity>
   );
 };

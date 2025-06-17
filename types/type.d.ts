@@ -26,17 +26,17 @@ declare interface LanguageOption {
     id: string;
     code: string;
     name: string;
-    nativeName: string;
     emoji: string;
+    available: boolean;
 }
 
 declare interface LanguageCheckboxProps {
     id: string;
     name: string;
-    nativeName: string;
     emoji?: string;
     icon?: any;
     isSelected: boolean;
+    available: boolean;
     onSelect: (id: string) => void;
 }
 
