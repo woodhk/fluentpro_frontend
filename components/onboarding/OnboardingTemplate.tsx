@@ -3,6 +3,7 @@ import { View, Text, Image, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import CustomButton from '@/components/CustomButton';
+import { Icon } from '@/components/icons/Icon';
 import { icons } from '@/constants';
 
 interface OnboardingTemplateProps {
@@ -38,19 +39,14 @@ const OnboardingTemplate: React.FC<OnboardingTemplateProps> = ({
         {/* Header with optional back button and progress */}
         <View className="h-16 flex-row items-center justify-between">
           {showBackButton ? (
-            <TouchableOpacity 
+            <TouchableOpacity
               onPress={() => router.back()}
-              className="p-2 flex-row items-center"
+              className="w-10 h-10 items-center justify-center"
             >
-              <Image 
-                source={icons.backArrow} 
-                className="w-5 h-5 mr-1"
-                style={{ tintColor: '#234BFF' }}
-              />
-              <Text className="text-primary-600 text-base font-JakartaMedium">Back</Text>
+              <Icon library="ionicons" name="chevron-back" size={24} color="#374151" />
             </TouchableOpacity>
           ) : (
-            <View className="w-20" />
+            <View className="w-10" />
           )}
           
           {/* Progress bar placeholder */}
