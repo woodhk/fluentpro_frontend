@@ -42,42 +42,6 @@ const OnboardingSummaryScreen = () => {
       } catch (err) {
         console.error('Error fetching onboarding summary:', err);
         setError('Failed to load onboarding summary. Please try again.');
-        
-        // For development, show mock data if API fails
-        const mockSummaryData: OnboardingSummary = {
-          native_language: "english",
-          native_language_display: "English",
-          industry_id: "hotels_hospitality",
-          industry_name: "Hotels & Hospitality",
-          role: {
-            id: "concierge",
-            title: "Concierge",
-            description: "Assists guests with various services and requests",
-            is_custom: false,
-            industry_name: "Hotels & Hospitality"
-          },
-          communication_partners: [
-            {
-              id: "clients",
-              name: "Clients",
-              description: "External clients",
-              priority: 1,
-              situations: [
-                {
-                  id: "meetings",
-                  name: "Meetings",
-                  description: "Business meetings",
-                  priority: 1
-                }
-              ]
-            }
-          ],
-          total_partners: 3,
-          total_situations: 10,
-          onboarding_status: "completed",
-          is_complete: true
-        };
-        setSummaryData(mockSummaryData);
       } finally {
         setLoading(false);
       }
@@ -118,8 +82,8 @@ const OnboardingSummaryScreen = () => {
     router.push("/(root)/(onboarding)/part-03/complete");
   };
 
-  const SummaryItemComponent = ({ item }: { item: SummaryItem }) => (
-    <View className="flex-row items-center py-4 border-b border-gray-100">
+  const SummaryItemComponent = ({ item, isLast }: { item: SummaryItem; isLast?: boolean }) => (
+    <View className={`flex-row items-center py-4 ${!isLast ? 'border-b border-gray-100' : ''}`}>
       <View
         className="w-12 h-12 rounded-full items-center justify-center mr-4"
         style={{ backgroundColor: `${item.bgColor}20` }}
@@ -223,6 +187,7 @@ const OnboardingSummaryScreen = () => {
             <SummaryItemComponent
               key={index}
               item={item}
+              isLast={index === summaryItems.length - 1}
             />
           ))}
         </View>
