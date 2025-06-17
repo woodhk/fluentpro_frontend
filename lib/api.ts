@@ -145,6 +145,22 @@ class ApiClient {
       body: JSON.stringify({ native_language: language }),
     });
   }
+
+  /**
+   * Set user's industry for onboarding
+   */
+  async setIndustry(industry: 'banking_finance' | 'shipping_logistics' | 'real_estate' | 'hotels_hospitality'): Promise<{
+    success: boolean;
+    message: string;
+    industry: string;
+    data: null;
+    timestamp: string;
+  }> {
+    return this.makeRequest('/onboarding/part-1/industry', {
+      method: 'POST',
+      body: JSON.stringify({ industry }),
+    });
+  }
 }
 
 export const apiClient = new ApiClient();

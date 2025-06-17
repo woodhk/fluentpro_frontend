@@ -37,7 +37,7 @@ const NativeLanguageScreen = () => {
     try {
       await dispatch(setNativeLanguage(selectedLanguage as NativeLanguage)).unwrap();
       // Navigate to next screen on success
-      router.push('/(root)/(onboarding)/part-01/role-select');
+      router.push('/(root)/(onboarding)/part-01/industry');
     } catch (error: any) {
       Alert.alert('Error', error || 'Failed to save language selection. Please try again.');
     }

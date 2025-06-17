@@ -143,7 +143,36 @@ export const nativeLanguages = [
   },
 ];
 
+// Industry options for onboarding
+export const industries = [
+  {
+    id: 'banking_finance',
+    name: 'Banking & Finance',
+    icon: 'dollar',
+    available: true,
+  },
+  {
+    id: 'shipping_logistics',
+    name: 'Shipping & Logistics',
+    icon: 'target',
+    available: true,
+  },
+  {
+    id: 'real_estate',
+    name: 'Real Estate',
+    icon: 'home',
+    available: true,
+  },
+  {
+    id: 'hotels_hospitality',
+    name: 'Hotels & Hospitality',
+    icon: 'star',
+    available: true,
+  },
+];
+
 export const data = {
     welcome,
     nativeLanguages,
+    industries,
 };
