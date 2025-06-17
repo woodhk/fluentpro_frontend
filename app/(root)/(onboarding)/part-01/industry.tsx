@@ -2,15 +2,18 @@ import React, { useState } from 'react';
 import { View, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks';
-import { setIndustry, updateIndustry, type Industry } from '@/lib/slices/onboardingSlice';
+import { setIndustry, updateIndustry, calculateOnboardingProgress, type Industry } from '@/lib/slices/onboardingSlice';
 import { industries } from '@/constants';
 import OptionBox from '@/components/OptionBox';
 import OnboardingSelectionTemplate from '@/components/onboarding/OnboardingSelectionTemplate';
+import ProgressBar from '@/components/ProgressBar';
 
 const IndustryScreen = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const { industry, isLoading, error } = useAppSelector((state) => state.onboarding);
+  const onboardingState = useAppSelector((state) => state.onboarding);
+  const { industry, isLoading, error } = onboardingState;
+  const progress = calculateOnboardingProgress(onboardingState);
   
   const [selectedIndustry, setSelectedIndustry] = useState<Industry | null>(industry);
 
@@ -43,6 +46,7 @@ const IndustryScreen = () => {
       onContinue={handleContinue}
       isContinueDisabled={!selectedIndustry || isLoading}
       error={error}
+      headerContent={<ProgressBar progress={progress} />}
     >
       <View>
         {industries.map((industryOption, index) => (

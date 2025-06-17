@@ -3,16 +3,18 @@
 import React from 'react';
 import { useRouter } from 'expo-router';
 import { useAppSelector } from '@/lib/hooks';
+import { calculateOnboardingProgress } from '@/lib/slices/onboardingSlice';
 import OnboardingTemplate from '@/components/onboarding/OnboardingTemplate';
 import { images, data } from '@/constants';
+import ProgressBar from '@/components/ProgressBar';
 
 const PartTwoIntro = () => {
   const router = useRouter();
   
   // Get onboarding data from Redux store
-  const { industry, selectedRole, customRole } = useAppSelector(
-    (state) => state.onboarding
-  );
+  const onboardingState = useAppSelector((state) => state.onboarding);
+  const { industry, selectedRole, customRole } = onboardingState;
+  const progress = calculateOnboardingProgress(onboardingState);
 
   // Function to get industry display data
   const getIndustryData = () => {
@@ -44,7 +46,7 @@ const PartTwoIntro = () => {
       primaryButtonText="Continue"
       onPrimaryPress={handleContinue}
       showBackButton={true}
-      progress={0.66}
+      headerContent={<ProgressBar progress={progress} />}
     />
   );
 };

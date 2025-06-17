@@ -10,21 +10,25 @@ import {
   selectCommunicationSituations,
   toggleSituationSelection,
   updateCurrentPartnerIndex,
-  clearError 
+  clearError,
+  calculateOnboardingProgress
 } from '@/lib/slices/onboardingSlice';
 import { communicationSituations, communicationPartners } from '@/constants';
+import ProgressBar from '@/components/ProgressBar';
 
 const Situations = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   
+  const onboardingState = useAppSelector((state) => state.onboarding);
   const {
     selectedPartners,
     currentPartnerIndex,
     partnerSituations,
     isLoading,
     error
-  } = useAppSelector((state) => state.onboarding);
+  } = onboardingState;
+  const progress = calculateOnboardingProgress(onboardingState);
 
   // Get current partner info
   const currentPartnerId = selectedPartners[currentPartnerIndex];
@@ -97,6 +101,7 @@ const Situations = () => {
       isContinueDisabled={currentSituations.length === 0 || isLoading}
       error={error}
       showBackButton={true}
+      headerContent={<ProgressBar progress={progress} />}
     >
       <View className="flex-1">
         {/* Progress indicator */}

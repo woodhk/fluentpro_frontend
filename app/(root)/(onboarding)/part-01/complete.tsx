@@ -4,17 +4,19 @@ import React from 'react';
 import { View, Text, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAppSelector } from '@/lib/hooks';
+import { calculateOnboardingProgress } from '@/lib/slices/onboardingSlice';
 import OnboardingSelectionTemplate from '@/components/onboarding/OnboardingSelectionTemplate';
 import SummaryItem from '@/components/SummaryItem';
 import { data } from '@/constants';
+import ProgressBar from '@/components/ProgressBar';
 
 const PartOneComplete = () => {
   const router = useRouter();
   
   // Get onboarding data from Redux store
-  const { nativeLanguage, industry, selectedRole, customRole } = useAppSelector(
-    (state) => state.onboarding
-  );
+  const onboardingState = useAppSelector((state) => state.onboarding);
+  const { nativeLanguage, industry, selectedRole, customRole } = onboardingState;
+  const progress = calculateOnboardingProgress(onboardingState);
 
   // Function to get language display data
   const getLanguageData = () => {
@@ -53,7 +55,7 @@ const PartOneComplete = () => {
       onContinue={handleContinue}
       continueButtonText="Continue"
       showBackButton={true}
-      progress={0.33} // 1/3 complete
+      headerContent={<ProgressBar progress={progress} />}
     >
       <View className="flex-1">
         {/* Summary container - single box with dividers */}

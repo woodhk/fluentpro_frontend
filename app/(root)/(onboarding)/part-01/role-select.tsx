@@ -2,14 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks';
-import { updateSelectedRole, updateCustomRole, selectRole } from '@/lib/slices/onboardingSlice';
+import { updateSelectedRole, updateCustomRole, selectRole, calculateOnboardingProgress } from '@/lib/slices/onboardingSlice';
 import OnboardingSelectionTemplate from '@/components/onboarding/OnboardingSelectionTemplate';
 import RoleSelectionBox from '@/components/RoleSelectionBox';
 import { RoleMatch, RoleSelectionRequest } from '@/lib/types';
+import ProgressBar from '@/components/ProgressBar';
 
 const RoleSelection = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const onboardingState = useAppSelector(state => state.onboarding);
   const { 
     roleMatches, 
     selectedRole, 
@@ -18,7 +20,8 @@ const RoleSelection = () => {
     jobDescription, 
     isLoading, 
     error 
-  } = useAppSelector(state => state.onboarding);
+  } = onboardingState;
+  const progress = calculateOnboardingProgress(onboardingState);
 
   const [showCustomRole, setShowCustomRole] = useState(false);
 
@@ -83,7 +86,7 @@ const RoleSelection = () => {
       continueButtonText="Continue"
       isContinueDisabled={isContinueDisabled || isLoading}
       error={error}
-      progress={0.5}
+      headerContent={<ProgressBar progress={progress} />}
     >
       <View className="space-y-3">
         {/* Role matches */}

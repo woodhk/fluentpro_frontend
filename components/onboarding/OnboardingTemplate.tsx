@@ -17,6 +17,7 @@ interface OnboardingTemplateProps {
   onSecondaryPress?: () => void;
   showBackButton?: boolean;
   progress?: number; // Value between 0 and 1
+  headerContent?: React.ReactNode; // For progress bar or other header content
 }
 
 const OnboardingTemplate: React.FC<OnboardingTemplateProps> = ({
@@ -30,6 +31,7 @@ const OnboardingTemplate: React.FC<OnboardingTemplateProps> = ({
   onSecondaryPress,
   showBackButton = true,
   progress = 0,
+  headerContent,
 }) => {
   const router = useRouter();
 
@@ -49,9 +51,9 @@ const OnboardingTemplate: React.FC<OnboardingTemplateProps> = ({
             <View className="w-10" />
           )}
           
-          {/* Progress bar placeholder */}
+          {/* Progress bar or other header content */}
           <View className="flex-1 mx-4">
-            {/* scrollbar implementation goes here */}
+            {headerContent}
           </View>
         </View>
 

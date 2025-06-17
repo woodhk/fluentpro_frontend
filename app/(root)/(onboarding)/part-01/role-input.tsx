@@ -2,16 +2,19 @@ import React, { useState } from 'react';
 import { View, Text } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks';
-import { updateJobTitle, updateJobDescription, searchRoles } from '@/lib/slices/onboardingSlice';
+import { updateJobTitle, updateJobDescription, searchRoles, calculateOnboardingProgress } from '@/lib/slices/onboardingSlice';
 import OnboardingSelectionTemplate from '@/components/onboarding/OnboardingSelectionTemplate';
 import InputField from '@/components/InputField';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
 import { icons } from '@/constants';
+import ProgressBar from '@/components/ProgressBar';
 
 const RoleInput = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const { jobTitle, jobDescription, isSearchingRoles, error } = useAppSelector(state => state.onboarding);
+  const onboardingState = useAppSelector(state => state.onboarding);
+  const { jobTitle, jobDescription, isSearchingRoles, error } = onboardingState;
+  const progress = calculateOnboardingProgress(onboardingState);
   
   // Local state for form validation
   const [titleError, setTitleError] = useState('');
@@ -108,7 +111,7 @@ const RoleInput = () => {
       continueButtonText="Search for my role"
       isContinueDisabled={isContinueDisabled}
       error={error}
-      progress={0.4}
+      headerContent={<ProgressBar progress={progress} />}
     >
       <View className="space-y-4">
         {/* Job Title Input */}

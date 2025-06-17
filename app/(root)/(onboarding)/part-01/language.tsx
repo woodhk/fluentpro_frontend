@@ -4,15 +4,18 @@ import React, { useState } from 'react';
 import { View, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks';
-import { setNativeLanguage, updateNativeLanguage, type NativeLanguage } from '@/lib/slices/onboardingSlice';
+import { setNativeLanguage, updateNativeLanguage, calculateOnboardingProgress, type NativeLanguage } from '@/lib/slices/onboardingSlice';
 import { nativeLanguages } from '@/constants';
 import LanguageCheckbox from '@/components/LanguageCheckbox';
 import OnboardingSelectionTemplate from '@/components/onboarding/OnboardingSelectionTemplate';
+import ProgressBar from '@/components/ProgressBar';
 
 const NativeLanguageScreen = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const { nativeLanguage, isLoading, error } = useAppSelector((state) => state.onboarding);
+  const onboardingState = useAppSelector((state) => state.onboarding);
+  const { nativeLanguage, isLoading, error } = onboardingState;
+  const progress = calculateOnboardingProgress(onboardingState);
   
   const [selectedLanguage, setSelectedLanguage] = useState<string | null>(nativeLanguage);
 
@@ -47,6 +50,7 @@ const NativeLanguageScreen = () => {
       onContinue={handleContinue}
       isContinueDisabled={!selectedLanguage || isLoading}
       error={error}
+      headerContent={<ProgressBar progress={progress} />}
     >
       <View className="flex-row flex-wrap justify-between">
         {nativeLanguages.map((language) => (

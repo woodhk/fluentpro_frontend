@@ -4,17 +4,19 @@ import React from 'react';
 import { View, Text } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAppSelector } from '@/lib/hooks';
+import { calculateOnboardingProgress } from '@/lib/slices/onboardingSlice';
 import OnboardingSelectionTemplate from '@/components/onboarding/OnboardingSelectionTemplate';
 import SummaryItem from '@/components/SummaryItem';
 import { data } from '@/constants';
+import ProgressBar from '@/components/ProgressBar';
 
 const PartTwoComplete = () => {
   const router = useRouter();
   
   // Get onboarding data from Redux store
-  const { selectedPartners, partnerSituations } = useAppSelector(
-    (state) => state.onboarding
-  );
+  const onboardingState = useAppSelector((state) => state.onboarding);
+  const { selectedPartners, partnerSituations } = onboardingState;
+  const progress = calculateOnboardingProgress(onboardingState);
 
   // Function to get summary items for each selected partner with their situations
   const getSummaryItems = () => {
@@ -59,7 +61,7 @@ const PartTwoComplete = () => {
       onContinue={handleContinue}
       continueButtonText="Continue"
       showBackButton={true}
-      progress={0.67} // 2/3 complete
+      headerContent={<ProgressBar progress={progress} />}
     >
       <View className="flex-1">
         {/* Summary container - single box with dividers */}

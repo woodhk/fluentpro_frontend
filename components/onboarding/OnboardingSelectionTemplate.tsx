@@ -16,6 +16,7 @@ interface OnboardingSelectionTemplateProps {
   error?: string | null;
   showBackButton?: boolean;
   progress?: number; // Value between 0 and 1
+  headerContent?: React.ReactNode; // For progress bar or other header content
 }
 
 const OnboardingSelectionTemplate: React.FC<OnboardingSelectionTemplateProps> = ({
@@ -28,6 +29,7 @@ const OnboardingSelectionTemplate: React.FC<OnboardingSelectionTemplateProps> = 
   error,
   showBackButton = true,
   progress = 0,
+  headerContent,
 }) => {
   const router = useRouter();
 
@@ -47,9 +49,9 @@ const OnboardingSelectionTemplate: React.FC<OnboardingSelectionTemplateProps> = 
             <View className="w-10" />
           )}
           
-          {/* Progress bar placeholder */}
+          {/* Progress bar or other header content */}
           <View className="flex-1 mx-4">
-            {/* Progress bar implementation goes here */}
+            {headerContent}
           </View>
         </View>
 

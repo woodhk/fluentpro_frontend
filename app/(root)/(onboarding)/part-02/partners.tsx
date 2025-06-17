@@ -9,19 +9,23 @@ import { useAppDispatch, useAppSelector } from '@/lib/hooks';
 import { 
   selectCommunicationPartners,
   togglePartnerSelection,
-  clearError 
+  clearError,
+  calculateOnboardingProgress
 } from '@/lib/slices/onboardingSlice';
 import { communicationPartners } from '@/constants';
+import ProgressBar from '@/components/ProgressBar';
 
 const Partners = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   
+  const onboardingState = useAppSelector((state) => state.onboarding);
   const {
     selectedPartners,
     isLoading,
     error
-  } = useAppSelector((state) => state.onboarding);
+  } = onboardingState;
+  const progress = calculateOnboardingProgress(onboardingState);
 
   useEffect(() => {
     // Clear any previous errors when component mounts
@@ -59,6 +63,7 @@ const Partners = () => {
       isContinueDisabled={selectedPartners.length === 0 || isLoading}
       error={error}
       showBackButton={true}
+      headerContent={<ProgressBar progress={progress} />}
     >
       <View className="flex-1">
         {/* Instruction text */}

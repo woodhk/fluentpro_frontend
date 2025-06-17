@@ -9,7 +9,7 @@ const Welcome = () => {
   
   return (
     <OnboardingTemplate
-      title="Welcome John 👋"
+      title="Welcome 👋"
       subtitle="We're excited to have you here. Let's get started with a quick setup"
       illustration={require('@/assets/images/onboarding1.png')}
       primaryButtonText="Continue"
