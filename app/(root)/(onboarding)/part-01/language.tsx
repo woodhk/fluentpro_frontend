@@ -7,7 +7,6 @@ import { useRouter } from 'expo-router';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks';
 import { setNativeLanguage, updateNativeLanguage, type NativeLanguage } from '@/lib/slices/onboardingSlice';
 import { nativeLanguages } from '@/constants';
-import { getFlagUrl } from '@/constants/countries';
 import LanguageCheckbox from '@/components/LanguageCheckbox';
 import CustomButton from '@/components/CustomButton';
 import { icons } from '@/constants';
@@ -89,7 +88,7 @@ const NativeLanguageScreen = () => {
                     id={language.id}
                     name={language.name}
                     nativeName={language.nativeName}
-                    flagUrl={getFlagUrl(language.flagCode)}
+                    emoji={language.emoji}
                     isSelected={selectedLanguage === language.id}
                     onSelect={handleLanguageSelect}
                   />

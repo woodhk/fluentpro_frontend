@@ -27,14 +27,14 @@ declare interface LanguageOption {
     code: string;
     name: string;
     nativeName: string;
-    flagCode: string;
+    emoji: string;
 }
 
 declare interface LanguageCheckboxProps {
     id: string;
     name: string;
     nativeName: string;
-    flagUrl?: string;
+    emoji?: string;
     icon?: any;
     isSelected: boolean;
     onSelect: (id: string) => void;

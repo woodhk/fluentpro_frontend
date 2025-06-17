@@ -104,21 +104,21 @@ export const nativeLanguages = [
     code: 'en',
     name: 'English',
     nativeName: 'English',
-    flagCode: 'us',
+    emoji: '🇺🇸',
   },
   {
     id: 'chinese_simplified',
     code: 'zh-hans',
     name: 'Chinese Simplified',
     nativeName: '简体中文',
-    flagCode: 'cn',
+    emoji: '🇨🇳',
   },
   {
     id: 'chinese_traditional',
     code: 'zh-hant',
     name: 'Chinese Traditional',
     nativeName: '繁體中文',
-    flagCode: 'tw',
+    emoji: '🇹🇼',
   },
 ];
 

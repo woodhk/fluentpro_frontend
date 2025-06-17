@@ -6,7 +6,7 @@ interface LanguageCheckboxProps {
   id: string;
   name: string;
   nativeName: string;
-  flagUrl?: string;
+  emoji?: string;
   icon?: any; // For icon-based options in future screens
   isSelected: boolean;
   onSelect: (id: string) => void;
@@ -16,7 +16,7 @@ const LanguageCheckbox: React.FC<LanguageCheckboxProps> = ({
   id,
   name,
   nativeName,
-  flagUrl,
+  emoji,
   icon,
   isSelected,
   onSelect,
@@ -32,14 +32,12 @@ const LanguageCheckbox: React.FC<LanguageCheckboxProps> = ({
         }
       `}
     >
-      {/* Flag or Icon */}
-      <View className="w-12 h-12 rounded-full bg-light-200 mr-4 overflow-hidden justify-center items-center">
-        {flagUrl ? (
-          <Image 
-            source={{ uri: flagUrl }} 
-            className="w-8 h-6"
-            resizeMode="cover"
-          />
+      {/* Emoji or Icon */}
+      <View className="w-12 h-12 rounded-full bg-light-200 mr-4 justify-center items-center">
+        {emoji ? (
+          <Text className="text-2xl">
+            {emoji}
+          </Text>
         ) : icon ? (
           <Image 
             source={icon} 
