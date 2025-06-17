@@ -68,4 +68,15 @@ declare interface RoleSelectionBoxProps {
     onSelect: (role: import('@/lib/types').RoleMatch) => void;
 }
 
+declare interface SummaryItemProps {
+    title: string;
+    description: string;
+    icon: {
+        library: 'ionicons' | 'material' | 'feather' | 'font-awesome' | 'material-community' | 'ant-design' | 'entypo' | 'font-awesome-5';
+        name: string;
+    };
+    bgColor: string;
+    isLast?: boolean;
+}
+
 
