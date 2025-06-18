@@ -16,6 +16,7 @@ import { icons, images } from '@/constants';
 import { authService } from '@/lib/services/auth.service';
 import { validateSignInForm, hasValidationErrors } from '@/utils/validation';
 import { ValidationErrors } from '@/types/api/auth.types';
+import { onboardingApi } from '@/lib/api/onboarding.api';
 
 export default function SignInScreen() {
   const router = useRouter();
@@ -96,13 +97,37 @@ export default function SignInScreen() {
       });
 
       if (result.success) {
-        // Check if user needs onboarding
-        const needsOnboarding = await authService.needsOnboarding();
-        
-        if (needsOnboarding) {
-          router.replace('/(root)/(onboarding)');
-        } else {
-          router.replace('/(root)/(tabs)/home');
+        // Check onboarding status from backend
+        try {
+          const onboardingStatus = await onboardingApi.getOnboardingStatus();
+          
+          if (onboardingStatus.completed) {
+            // Onboarding complete, go to home
+            router.replace('/(root)/(tabs)/home');
+          } else {
+            // Onboarding not complete, go to welcome page
+            const incompleteSteps = [
+              'not_started',
+              'native_language', 
+              'industry_selection',
+              'role_input',
+              'role_select',
+              'communication_partners',
+              'situation_selection',
+              'summary'
+            ];
+            
+            if (incompleteSteps.includes(onboardingStatus.current_step)) {
+              router.replace('/(root)/(onboarding)/welcome');
+            } else {
+              // Unknown step, redirect to welcome as fallback
+              router.replace('/(root)/(onboarding)/welcome');
+            }
+          }
+        } catch (onboardingError) {
+          console.error('Failed to check onboarding status:', onboardingError);
+          // On error, default to welcome page
+          router.replace('/(root)/(onboarding)/welcome');
         }
       }
     } catch (error) {

@@ -109,6 +109,21 @@ export class OnboardingApi extends BaseApiClient {
       method: 'POST',
     });
   }
+
+  /**
+   * Get user's onboarding progress status
+   */
+  async getOnboardingStatus(): Promise<{
+    success: boolean;
+    message: string;
+    current_step: string;
+    next_step: string;
+    completed: boolean;
+    can_resume: boolean;
+    progress_data: Record<string, any>;
+  }> {
+    return this.makeRequest('/onboarding/progress/status');
+  }
 }
 
 // Export singleton instance
