@@ -13,7 +13,7 @@ import InputField from '@/components/InputField';
 import CustomButton from '@/components/CustomButton';
 import { icons, images } from '@/constants';
 import { authService } from '@/lib/services/auth.service';
-import { validateSignUpForm, hasValidationErrors } from '../../utils/validation';
+import { validateSignUpForm, hasValidationErrors } from '@/utils/validation';
 import { ValidationErrors } from '@/types/api/auth.types';
 
 export default function SignUpScreen() {
