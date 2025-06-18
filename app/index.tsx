@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import { View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { LoadingSpinner } from '../components/common/LoadingSpinner';
-import { authService } from '../lib/auth';
+import { authService } from '@/lib/services/auth.service';
 
 export default function AuthLoadingScreen() {
   const router = useRouter();

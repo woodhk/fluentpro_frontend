@@ -6,7 +6,7 @@ import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { LoadingButton } from '../../../components/auth/LoadingButton';
 import { LoadingSpinner } from '../../../components/common/LoadingSpinner';
-import { authService } from '../../../lib/auth';
+import { authService } from '@/lib/services/auth.service';
 import { User } from '../../../lib/types';
 
 export default function HomeScreen() {

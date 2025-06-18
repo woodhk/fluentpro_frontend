@@ -2,7 +2,7 @@
  * Base API client with common request handling
  */
 
-import { storage } from '@/lib/storage';
+import { storage } from '@/lib/services/storage.service';
 import { ApiError } from '@/types/api/common.types';
 
 const API_BASE_URL = 'https://fluentpro-backend.onrender.com/api/v1';

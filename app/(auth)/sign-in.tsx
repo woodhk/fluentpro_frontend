@@ -13,7 +13,7 @@ import { useRouter, useFocusEffect } from 'expo-router';
 import InputField from '@/components/InputField';
 import CustomButton from '@/components/CustomButton';
 import { icons, images } from '@/constants';
-import { authService } from '../../lib/auth';
+import { authService } from '@/lib/services/auth.service';
 import { validateSignInForm, hasValidationErrors } from '../../utils/validation';
 import { ValidationErrors } from '@/types/api/auth.types';
 

@@ -2,8 +2,8 @@
 import { SignUpRequest, SignInRequest } from '@/types/api/auth.types';
 import { User, AuthState } from '@/types/models/user.types';
 import { ApiError } from '@/types/api/common.types';
-import { apiClient } from './api/index';
-import { storage } from './storage';
+import { apiClient } from '@/lib/api';
+import { storage } from './storage.service';
 
 class AuthService {
   /**

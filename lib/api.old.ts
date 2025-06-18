@@ -14,7 +14,7 @@ import {
   SituationSelectionResponse, 
   OnboardingSummaryResponse 
 } from '@/types/api/onboarding.types';
-import { storage } from './storage';
+import { storage } from '@/lib/services/storage.service';
 
 const API_BASE_URL = 'https://fluentpro-backend.onrender.com/api/v1';
 
