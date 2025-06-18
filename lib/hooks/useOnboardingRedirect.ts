@@ -27,40 +27,47 @@ export const useOnboardingRedirect = () => {
     try {
       setState({ loading: true, error: null });
 
-      // Try to get cached user details from frontend
+      // Get current authentication state from cache
       const authState = await authService.getAuthState();
-      if (!authState.isAuthenticated || !authState.user) {
+      
+      if (authState.isSignedIn && authState.user && authState.token) {
+        // User has cached auth, validate session with backend
+        const isSessionValid = await authService.validateSession();
+        
+        if (isSessionValid) {
+          // Session is valid, check onboarding status
+          const onboardingStatus = await onboardingApi.getOnboardingStatus();
+
+          if (onboardingStatus.completed) {
+            // Onboarding complete, redirect to home
+            router.replace('/(root)/(tabs)/home');
+          } else {
+            // Onboarding not complete, redirect to onboarding welcome
+            const incompleteSteps = [
+              'not_started',
+              'native_language',
+              'industry_selection',
+              'role_input',
+              'role_select',
+              'communication_partners',
+              'situation_selection',
+              'summary'
+            ];
+
+            if (incompleteSteps.includes(onboardingStatus.current_step)) {
+              router.replace('/(root)/(onboarding)/welcome');
+            } else {
+              // Unknown step, redirect to onboarding welcome as fallback
+              router.replace('/(root)/(onboarding)/welcome');
+            }
+          }
+        } else {
+          // Session is invalid, redirect to welcome screen
+          router.replace('/(auth)/welcome');
+        }
+      } else {
         // No cached user, redirect to welcome screen
         router.replace('/(auth)/welcome');
-        setState({ loading: false, error: null });
-        return;
-      }
-
-      // User is cached, check onboarding status with backend
-      const onboardingStatus = await onboardingApi.getOnboardingStatus();
-
-      if (onboardingStatus.completed) {
-        // Onboarding complete, redirect to home
-        router.replace('/(root)/(tabs)/home');
-      } else {
-        // Onboarding not complete, redirect to onboarding welcome
-        const incompleteSteps = [
-          'not_started',
-          'native_language',
-          'industry_selection',
-          'role_input',
-          'role_select',
-          'communication_partners',
-          'situation_selection',
-          'summary'
-        ];
-
-        if (incompleteSteps.includes(onboardingStatus.current_step)) {
-          router.replace('/(root)/(onboarding)/welcome');
-        } else {
-          // Unknown step, redirect to onboarding welcome as fallback
-          router.replace('/(root)/(onboarding)/welcome');
-        }
       }
 
       setState({ loading: false, error: null });
