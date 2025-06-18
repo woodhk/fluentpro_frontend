@@ -1,14 +1,6 @@
-// components/common/LoadingSpinner.tsx
 import React from 'react';
 import { View, ActivityIndicator, Text } from 'react-native';
-
-interface LoadingSpinnerProps {
-  size?: 'small' | 'large';
-  color?: string;
-  message?: string;
-  fullScreen?: boolean;
-  className?: string;
-}
+import { LoadingSpinnerProps } from '@/types/components/ui.types';
 
 export function LoadingSpinner({
   size = 'large',

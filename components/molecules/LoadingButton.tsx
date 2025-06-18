@@ -1,4 +1,3 @@
-// components/auth/LoadingButton.tsx
 import React from 'react';
 import { 
   TouchableOpacity, 

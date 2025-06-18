@@ -5,7 +5,7 @@ import Swiper from 'react-native-swiper'
 import { useRef, useState } from "react";
 import { welcome } from "@/constants";
 import { Image } from "react-native";
-import CustomButton from "@/components/CustomButton";
+import CustomButton from "@/components/atoms/CustomButton";
 
 const Welcome = () => {
   const swiperRef = useRef<Swiper>(null);

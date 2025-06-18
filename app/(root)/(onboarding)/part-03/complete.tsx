@@ -5,7 +5,7 @@ import { View, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAppSelector, useAppDispatch } from '@/lib/store/hooks';
 import { selectIndustry, selectSelectedRole, selectCustomRole } from '@/lib/store/slices/onboarding/onboarding.selectors';
-import OnboardingTemplate from '@/components/onboarding/OnboardingTemplate';
+import OnboardingTemplate from '@/components/templates/OnboardingTemplate';
 import { data } from '@/constants';
 import { apiClient } from '@/lib/api';
 

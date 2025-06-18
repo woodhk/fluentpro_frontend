@@ -1,6 +1,6 @@
-import OnboardingSelectionTemplate from '@/components/onboarding/OnboardingSelectionTemplate';
-import ProgressBar from '@/components/ProgressBar';
-import SelectableOption from '@/components/RectangleCheckbox';
+import OnboardingSelectionTemplate from '@/components/templates/OnboardingSelectionTemplate';
+import ProgressBar from '@/components/organisms/ProgressBar';
+import SelectableOption from '@/components/organisms/RectangleCheckbox';
 import { industries } from '@/constants';
 import { useAppDispatch, useAppSelector } from '@/lib/store/hooks';
 import { calculateOnboardingProgress, selectError, selectIndustry, selectIsLoading } from '@/lib/store/slices/onboarding/onboarding.selectors';

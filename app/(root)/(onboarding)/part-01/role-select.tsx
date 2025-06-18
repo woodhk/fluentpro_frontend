@@ -5,10 +5,10 @@ import { useAppDispatch, useAppSelector } from '@/lib/store/hooks';
 import { updateSelectedRole, updateCustomRole } from '@/lib/store/slices/onboarding/onboarding.slice';
 import { selectRole } from '@/lib/store/slices/onboarding/onboarding.thunks';
 import { calculateOnboardingProgress, selectRoleMatches, selectSelectedRole, selectCustomRole, selectJobTitle, selectJobDescription, selectIsLoading, selectError } from '@/lib/store/slices/onboarding/onboarding.selectors';
-import OnboardingSelectionTemplate from '@/components/onboarding/OnboardingSelectionTemplate';
-import RoleSelectionBox from '@/components/RoleSelectionBox';
+import OnboardingSelectionTemplate from '@/components/templates/OnboardingSelectionTemplate';
+import RoleSelectionBox from '@/components/organisms/RoleSelectionBox';
 import { RoleMatch, RoleSelectionRequest } from '@/types/api/onboarding.types';
-import ProgressBar from '@/components/ProgressBar';
+import ProgressBar from '@/components/organisms/ProgressBar';
 
 const RoleSelection = () => {
   const router = useRouter();

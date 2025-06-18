@@ -10,8 +10,8 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useFocusEffect } from 'expo-router';
-import InputField from '@/components/InputField';
-import CustomButton from '@/components/CustomButton';
+import InputField from '@/components/atoms/InputField';
+import CustomButton from '@/components/atoms/CustomButton';
 import { icons, images } from '@/constants';
 import { authService } from '@/lib/services/auth.service';
 import { validateSignInForm, hasValidationErrors } from '@/utils/validation';

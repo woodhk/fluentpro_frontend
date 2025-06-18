@@ -4,9 +4,9 @@ import React from 'react';
 import { useRouter } from 'expo-router';
 import { useAppSelector } from '@/lib/store/hooks';
 import { calculateOnboardingProgress, selectIndustry, selectSelectedRole, selectCustomRole } from '@/lib/store/slices/onboarding/onboarding.selectors';
-import OnboardingTemplate from '@/components/onboarding/OnboardingTemplate';
+import OnboardingTemplate from '@/components/templates/OnboardingTemplate';
 import { images, data } from '@/constants';
-import ProgressBar from '@/components/ProgressBar';
+import ProgressBar from '@/components/organisms/ProgressBar';
 
 const PartTwoIntro = () => {
   const router = useRouter();

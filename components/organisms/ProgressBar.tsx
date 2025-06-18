@@ -12,17 +12,7 @@ import Animated, {
   Extrapolation,
 } from 'react-native-reanimated';
 import { LinearGradient } from 'expo-linear-gradient';
-
-interface ProgressBarProps {
-  progress: number; // Value between 0 and 1
-  height?: number;
-  backgroundColor?: string;
-  progressColor?: string;
-  animationDuration?: number;
-  showGlow?: boolean;
-  showShimmer?: boolean;
-  gradientColors?: readonly [string, string, ...string[]];
-}
+import { ProgressBarProps } from '@/types/components/ui.types';
 
 const ProgressBar: React.FC<ProgressBarProps> = ({
   progress,

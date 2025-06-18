@@ -2,8 +2,8 @@ import React from 'react';
 import { View, Text, Image, TouchableOpacity, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import CustomButton from '@/components/CustomButton';
-import { Icon } from '@/components/icons/Icon';
+import CustomButton from '@/components/atoms/CustomButton';
+import { Icon } from '@/components/atoms/icons/Icon';
 import { icons } from '@/constants';
 
 interface OnboardingSelectionTemplateProps {

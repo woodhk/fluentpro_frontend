@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useRouter } from 'expo-router';
-import OnboardingTemplate from '@/components/onboarding/OnboardingTemplate';
+import OnboardingTemplate from '@/components/templates/OnboardingTemplate';
 
 const Welcome = () => {
   const router = useRouter();

@@ -1,14 +1,7 @@
-// components/common/ErrorMessage.tsx
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-
-interface ErrorMessageProps {
-  message: string;
-  onDismiss?: () => void;
-  variant?: 'inline' | 'banner' | 'toast';
-  className?: string;
-}
+import { ErrorMessageProps } from '@/types/components/ui.types';
 
 export function ErrorMessage({ 
   message, 

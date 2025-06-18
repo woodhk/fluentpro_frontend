@@ -9,8 +9,8 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { useRouter, useFocusEffect } from 'expo-router';
-import InputField from '@/components/InputField';
-import CustomButton from '@/components/CustomButton';
+import InputField from '@/components/atoms/InputField';
+import CustomButton from '@/components/atoms/CustomButton';
 import { icons, images } from '@/constants';
 import { authService } from '@/lib/services/auth.service';
 import { validateSignUpForm, hasValidationErrors } from '@/utils/validation';

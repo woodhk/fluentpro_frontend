@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-import { Icon } from './icons/Icon';
+import { Icon } from '../atoms/icons/Icon';
 
 interface SummaryItemProps {
   title: string;

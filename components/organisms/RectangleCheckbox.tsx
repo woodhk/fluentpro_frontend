@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, Image } from 'react-native';
-import { Icon, type IconProps } from '@/components/icons/Icon';
+import { Icon, type IconProps } from '@/components/atoms/icons/Icon';
 import { icons } from '@/constants';
 
 interface SelectableOptionProps {

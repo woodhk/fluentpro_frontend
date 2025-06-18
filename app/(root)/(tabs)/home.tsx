@@ -4,8 +4,8 @@ import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { LoadingButton } from '../../../components/auth/LoadingButton';
-import { LoadingSpinner } from '../../../components/common/LoadingSpinner';
+import { LoadingButton } from '@/components/molecules/LoadingButton';
+import { LoadingSpinner } from '@/components/atoms/LoadingSpinner';
 import { authService } from '@/lib/services/auth.service';
 import { User } from '@/types/models/user.types';
 

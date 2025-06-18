@@ -1,8 +1,8 @@
 // Screen 10 - Communication Situations Selection
 
-import OnboardingSelectionTemplate from '@/components/onboarding/OnboardingSelectionTemplate';
-import ProgressBar from '@/components/ProgressBar';
-import SelectableOption from '@/components/RectangleCheckbox';
+import OnboardingSelectionTemplate from '@/components/templates/OnboardingSelectionTemplate';
+import ProgressBar from '@/components/organisms/ProgressBar';
+import SelectableOption from '@/components/organisms/RectangleCheckbox';
 import { communicationPartners, communicationSituations } from '@/constants';
 import { useAppDispatch, useAppSelector } from '@/lib/store/hooks';
 import { calculateOnboardingProgress, selectCurrentPartnerIndex, selectError, selectIsLoading, selectPartnerSituations, selectSelectedPartners } from '@/lib/store/slices/onboarding/onboarding.selectors';

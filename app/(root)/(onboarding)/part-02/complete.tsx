@@ -5,10 +5,10 @@ import { View, Text } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAppSelector } from '@/lib/store/hooks';
 import { calculateOnboardingProgress, selectSelectedPartners, selectPartnerSituations } from '@/lib/store/slices/onboarding/onboarding.selectors';
-import OnboardingSelectionTemplate from '@/components/onboarding/OnboardingSelectionTemplate';
-import SummaryItem from '@/components/SummaryItem';
+import OnboardingSelectionTemplate from '@/components/templates/OnboardingSelectionTemplate';
+import SummaryItem from '@/components/molecules/SummaryItem';
 import { data } from '@/constants';
-import ProgressBar from '@/components/ProgressBar';
+import ProgressBar from '@/components/organisms/ProgressBar';
 
 const PartTwoComplete = () => {
   const router = useRouter();

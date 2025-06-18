@@ -1,8 +1,8 @@
 // Screen 9 - Communication Partners Selection
 
-import OnboardingSelectionTemplate from '@/components/onboarding/OnboardingSelectionTemplate';
-import ProgressBar from '@/components/ProgressBar';
-import SelectableOption from '@/components/RectangleCheckbox';
+import OnboardingSelectionTemplate from '@/components/templates/OnboardingSelectionTemplate';
+import ProgressBar from '@/components/organisms/ProgressBar';
+import SelectableOption from '@/components/organisms/RectangleCheckbox';
 import { communicationPartners } from '@/constants';
 import { useAppDispatch, useAppSelector } from '@/lib/store/hooks';
 import { calculateOnboardingProgress, selectError, selectIsLoading, selectSelectedPartners } from '@/lib/store/slices/onboarding/onboarding.selectors';

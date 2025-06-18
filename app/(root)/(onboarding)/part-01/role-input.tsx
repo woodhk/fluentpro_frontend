@@ -5,11 +5,11 @@ import { useAppDispatch, useAppSelector } from '@/lib/store/hooks';
 import { updateJobTitle, updateJobDescription } from '@/lib/store/slices/onboarding/onboarding.slice';
 import { searchRoles } from '@/lib/store/slices/onboarding/onboarding.thunks';
 import { calculateOnboardingProgress, selectJobTitle, selectJobDescription, selectIsSearchingRoles, selectError } from '@/lib/store/slices/onboarding/onboarding.selectors';
-import OnboardingSelectionTemplate from '@/components/onboarding/OnboardingSelectionTemplate';
-import InputField from '@/components/InputField';
-import { LoadingSpinner } from '@/components/common/LoadingSpinner';
+import OnboardingSelectionTemplate from '@/components/templates/OnboardingSelectionTemplate';
+import InputField from '@/components/atoms/InputField';
+import { LoadingSpinner } from '@/components/atoms/LoadingSpinner';
 import { icons } from '@/constants';
-import ProgressBar from '@/components/ProgressBar';
+import ProgressBar from '@/components/organisms/ProgressBar';
 
 const RoleInput = () => {
   const router = useRouter();
