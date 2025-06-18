@@ -9,7 +9,7 @@ import CustomButton from "@/components/CustomButton";
 import { part3SummaryData } from "@/constants";
 import { images } from "@/constants";
 import { apiClient } from "@/lib/api";
-import { OnboardingSummary } from "@/lib/types";
+import { OnboardingSummary } from '@/types/api/onboarding.types';
 
 interface SummaryItem {
   title: string;

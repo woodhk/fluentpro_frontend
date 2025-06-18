@@ -1,5 +1,19 @@
 // lib/api.ts
-import { SignUpRequest, SignInRequest, AuthResponse, User, ApiError, LoginResponse, RoleSearchRequest, RoleSearchResponse, RoleSelectionRequest, RoleSelectionResponse, CommunicationPartnersResponse, CommunicationPartnerSelectionRequest, CommunicationPartnerSelectionResponse, SituationSelectionRequest, SituationSelectionResponse, OnboardingSummaryResponse } from './types';
+import { SignUpRequest, SignInRequest, AuthResponse, LoginResponse } from '@/types/api/auth.types';
+import { User } from '@/types/models/user.types';
+import { ApiError } from '@/types/api/common.types';
+import { 
+  RoleSearchRequest, 
+  RoleSearchResponse, 
+  RoleSelectionRequest, 
+  RoleSelectionResponse, 
+  CommunicationPartnersResponse, 
+  CommunicationPartnerSelectionRequest, 
+  CommunicationPartnerSelectionResponse, 
+  SituationSelectionRequest, 
+  SituationSelectionResponse, 
+  OnboardingSummaryResponse 
+} from '@/types/api/onboarding.types';
 import { storage } from './storage';
 
 const API_BASE_URL = 'https://fluentpro-backend.onrender.com/api/v1';

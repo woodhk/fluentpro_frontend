@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { icons } from '@/constants';
-import { RoleMatch } from '@/lib/types';
+import { RoleMatch } from '@/types/api/onboarding.types';
 
 interface RoleSelectionBoxProps {
   role: RoleMatch;

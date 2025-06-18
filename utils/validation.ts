@@ -1,5 +1,5 @@
 // utils/validation.ts
-import { ValidationErrors } from '../lib/types';
+import { ValidationErrors } from '@/types/api/auth.types';
 
 /**
  * Email validation regex pattern

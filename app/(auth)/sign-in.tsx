@@ -15,7 +15,7 @@ import CustomButton from '@/components/CustomButton';
 import { icons, images } from '@/constants';
 import { authService } from '../../lib/auth';
 import { validateSignInForm, hasValidationErrors } from '../../utils/validation';
-import { ValidationErrors } from '../../lib/types';
+import { ValidationErrors } from '@/types/api/auth.types';
 
 export default function SignInScreen() {
   const router = useRouter();

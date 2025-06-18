@@ -1,6 +1,13 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { apiClient } from '../api';
-import { RoleMatch, RoleSearchRequest, RoleSelectionRequest, CommunicationPartnerAPI, CommunicationPartnerSelectionRequest, SituationSelectionRequest } from '../types';
+import { 
+  RoleMatch, 
+  RoleSearchRequest, 
+  RoleSelectionRequest, 
+  CommunicationPartnerAPI, 
+  CommunicationPartnerSelectionRequest, 
+  SituationSelectionRequest 
+} from '@/types/api/onboarding.types';
 
 export type NativeLanguage = 'english' | 'chinese_traditional' | 'chinese_simplified';
 export type Industry = 'banking_finance' | 'shipping_logistics' | 'real_estate' | 'hotels_hospitality';

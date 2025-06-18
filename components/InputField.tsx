@@ -10,7 +10,7 @@ import {
   Platform,
 } from "react-native";
 
-import { InputFieldProps } from "@/types/type";
+import { InputFieldProps } from "@/types/components/ui.types";
 
 const InputField = forwardRef<TextInput, InputFieldProps>(({
   label,

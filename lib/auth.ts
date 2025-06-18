@@ -1,5 +1,7 @@
 // lib/auth.ts
-import { SignUpRequest, SignInRequest, User, AuthState, ApiError } from './types';
+import { SignUpRequest, SignInRequest } from '@/types/api/auth.types';
+import { User, AuthState } from '@/types/models/user.types';
+import { ApiError } from '@/types/api/common.types';
 import { apiClient } from './api';
 import { storage } from './storage';
 
