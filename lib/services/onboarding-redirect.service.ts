@@ -1,5 +1,5 @@
 /**
- * Hook for handling onboarding redirect logic
+ * Service for handling onboarding redirect logic
  */
 
 import { useEffect, useState } from 'react';

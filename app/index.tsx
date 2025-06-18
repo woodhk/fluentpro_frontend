@@ -2,7 +2,7 @@
 import React from 'react';
 import { View } from 'react-native';
 import { LoadingSpinner } from '@/components/atoms/LoadingSpinner';
-import { useOnboardingRedirect } from '@/lib/hooks/useOnboardingRedirect';
+import { useOnboardingRedirect } from '@/lib/services/onboarding-redirect.service';
 
 export default function AuthLoadingScreen() {
   const { loading, error } = useOnboardingRedirect();
