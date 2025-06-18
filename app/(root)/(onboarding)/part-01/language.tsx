@@ -3,8 +3,10 @@
 import React, { useState } from 'react';
 import { View, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useAppDispatch, useAppSelector } from '@/lib/hooks';
-import { setNativeLanguage, updateNativeLanguage, calculateOnboardingProgress, type NativeLanguage } from '@/lib/slices/onboardingSlice';
+import { useAppDispatch, useAppSelector } from '@/lib/store/hooks';
+import { updateNativeLanguage } from '@/lib/store/slices/onboarding/onboarding.slice';
+import { setNativeLanguage, type NativeLanguage } from '@/lib/store/slices/onboarding/onboarding.thunks';
+import { calculateOnboardingProgress, selectNativeLanguage, selectIsLoading, selectError } from '@/lib/store/slices/onboarding/onboarding.selectors';
 import { nativeLanguages } from '@/constants';
 import LanguageCheckbox from '@/components/LanguageCheckbox';
 import OnboardingSelectionTemplate from '@/components/onboarding/OnboardingSelectionTemplate';
@@ -13,9 +15,10 @@ import ProgressBar from '@/components/ProgressBar';
 const NativeLanguageScreen = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const onboardingState = useAppSelector((state) => state.onboarding);
-  const { nativeLanguage, isLoading, error } = onboardingState;
-  const progress = calculateOnboardingProgress(onboardingState);
+  const nativeLanguage = useAppSelector(selectNativeLanguage);
+  const isLoading = useAppSelector(selectIsLoading);
+  const error = useAppSelector(selectError);
+  const progress = useAppSelector(calculateOnboardingProgress);
   
   const [selectedLanguage, setSelectedLanguage] = useState<string | null>(nativeLanguage);
 

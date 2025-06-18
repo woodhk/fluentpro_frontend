@@ -3,7 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useAppSelector, useAppDispatch } from '@/lib/hooks';
+import { useAppSelector, useAppDispatch } from '@/lib/store/hooks';
+import { selectIndustry, selectSelectedRole, selectCustomRole } from '@/lib/store/slices/onboarding/onboarding.selectors';
 import OnboardingTemplate from '@/components/onboarding/OnboardingTemplate';
 import { data } from '@/constants';
 import { apiClient } from '@/lib/api';
@@ -15,7 +16,9 @@ const PartThreeComplete = () => {
   const [isCompleting, setIsCompleting] = useState(false);
   
   // Get onboarding data from Redux store
-  const { industry, selectedRole, customRole } = useAppSelector((state) => state.onboarding);
+  const industry = useAppSelector(selectIndustry);
+  const selectedRole = useAppSelector(selectSelectedRole);
+  const customRole = useAppSelector(selectCustomRole);
   
   const screens = data.part3CompletionScreens;
   const currentScreenData = screens[currentScreen];

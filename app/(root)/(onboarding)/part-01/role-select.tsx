@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useAppDispatch, useAppSelector } from '@/lib/hooks';
-import { updateSelectedRole, updateCustomRole, selectRole, calculateOnboardingProgress } from '@/lib/slices/onboardingSlice';
+import { useAppDispatch, useAppSelector } from '@/lib/store/hooks';
+import { updateSelectedRole, updateCustomRole } from '@/lib/store/slices/onboarding/onboarding.slice';
+import { selectRole } from '@/lib/store/slices/onboarding/onboarding.thunks';
+import { calculateOnboardingProgress, selectRoleMatches, selectSelectedRole, selectCustomRole, selectJobTitle, selectJobDescription, selectIsLoading, selectError } from '@/lib/store/slices/onboarding/onboarding.selectors';
 import OnboardingSelectionTemplate from '@/components/onboarding/OnboardingSelectionTemplate';
 import RoleSelectionBox from '@/components/RoleSelectionBox';
 import { RoleMatch, RoleSelectionRequest } from '@/lib/types';
@@ -11,17 +13,14 @@ import ProgressBar from '@/components/ProgressBar';
 const RoleSelection = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const onboardingState = useAppSelector(state => state.onboarding);
-  const { 
-    roleMatches, 
-    selectedRole, 
-    customRole, 
-    jobTitle, 
-    jobDescription, 
-    isLoading, 
-    error 
-  } = onboardingState;
-  const progress = calculateOnboardingProgress(onboardingState);
+  const roleMatches = useAppSelector(selectRoleMatches);
+  const selectedRole = useAppSelector(selectSelectedRole);
+  const customRole = useAppSelector(selectCustomRole);
+  const jobTitle = useAppSelector(selectJobTitle);
+  const jobDescription = useAppSelector(selectJobDescription);
+  const isLoading = useAppSelector(selectIsLoading);
+  const error = useAppSelector(selectError);
+  const progress = useAppSelector(calculateOnboardingProgress);
 
   const [showCustomRole, setShowCustomRole] = useState(false);
 

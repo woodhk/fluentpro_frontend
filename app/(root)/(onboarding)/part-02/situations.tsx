@@ -5,14 +5,10 @@ import { View, Text } from 'react-native';
 import { useRouter } from 'expo-router';
 import OnboardingSelectionTemplate from '@/components/onboarding/OnboardingSelectionTemplate';
 import SituationCheckbox from '@/components/SituationCheckbox';
-import { useAppDispatch, useAppSelector } from '@/lib/hooks';
-import { 
-  selectCommunicationSituations,
-  toggleSituationSelection,
-  updateCurrentPartnerIndex,
-  clearError,
-  calculateOnboardingProgress
-} from '@/lib/slices/onboardingSlice';
+import { useAppDispatch, useAppSelector } from '@/lib/store/hooks';
+import { toggleSituationSelection, updateCurrentPartnerIndex, clearError } from '@/lib/store/slices/onboarding/onboarding.slice';
+import { selectCommunicationSituations } from '@/lib/store/slices/onboarding/onboarding.thunks';
+import { calculateOnboardingProgress, selectSelectedPartners, selectCurrentPartnerIndex, selectPartnerSituations, selectIsLoading, selectError } from '@/lib/store/slices/onboarding/onboarding.selectors';
 import { communicationSituations, communicationPartners } from '@/constants';
 import ProgressBar from '@/components/ProgressBar';
 
@@ -20,15 +16,12 @@ const Situations = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   
-  const onboardingState = useAppSelector((state) => state.onboarding);
-  const {
-    selectedPartners,
-    currentPartnerIndex,
-    partnerSituations,
-    isLoading,
-    error
-  } = onboardingState;
-  const progress = calculateOnboardingProgress(onboardingState);
+  const selectedPartners = useAppSelector(selectSelectedPartners);
+  const currentPartnerIndex = useAppSelector(selectCurrentPartnerIndex);
+  const partnerSituations = useAppSelector(selectPartnerSituations);
+  const isLoading = useAppSelector(selectIsLoading);
+  const error = useAppSelector(selectError);
+  const progress = useAppSelector(calculateOnboardingProgress);
 
   // Get current partner info
   const currentPartnerId = selectedPartners[currentPartnerIndex];

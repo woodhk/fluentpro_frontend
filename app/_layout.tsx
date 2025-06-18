@@ -3,7 +3,7 @@ import React from 'react';
 import { Stack } from "expo-router";
 import { useFonts } from 'expo-font';
 import { Provider } from 'react-redux';
-import { store } from '../lib/store';
+import { store } from '@/lib/store';
 import './globals.css';
 
 export default function RootLayout() {

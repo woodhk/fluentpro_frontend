@@ -5,13 +5,10 @@ import { View, Text } from 'react-native';
 import { useRouter } from 'expo-router';
 import OnboardingSelectionTemplate from '@/components/onboarding/OnboardingSelectionTemplate';
 import CommunicationPartnerCheckbox from '@/components/CommunicationPartnerCheckbox';
-import { useAppDispatch, useAppSelector } from '@/lib/hooks';
-import { 
-  selectCommunicationPartners,
-  togglePartnerSelection,
-  clearError,
-  calculateOnboardingProgress
-} from '@/lib/slices/onboardingSlice';
+import { useAppDispatch, useAppSelector } from '@/lib/store/hooks';
+import { togglePartnerSelection, clearError } from '@/lib/store/slices/onboarding/onboarding.slice';
+import { selectCommunicationPartners } from '@/lib/store/slices/onboarding/onboarding.thunks';
+import { calculateOnboardingProgress, selectSelectedPartners, selectIsLoading, selectError } from '@/lib/store/slices/onboarding/onboarding.selectors';
 import { communicationPartners } from '@/constants';
 import ProgressBar from '@/components/ProgressBar';
 
@@ -19,13 +16,10 @@ const Partners = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   
-  const onboardingState = useAppSelector((state) => state.onboarding);
-  const {
-    selectedPartners,
-    isLoading,
-    error
-  } = onboardingState;
-  const progress = calculateOnboardingProgress(onboardingState);
+  const selectedPartners = useAppSelector(selectSelectedPartners);
+  const isLoading = useAppSelector(selectIsLoading);
+  const error = useAppSelector(selectError);
+  const progress = useAppSelector(calculateOnboardingProgress);
 
   useEffect(() => {
     // Clear any previous errors when component mounts

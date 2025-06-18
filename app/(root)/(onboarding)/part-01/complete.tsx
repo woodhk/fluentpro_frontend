@@ -3,8 +3,8 @@
 import React from 'react';
 import { View, Text, Image } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useAppSelector } from '@/lib/hooks';
-import { calculateOnboardingProgress } from '@/lib/slices/onboardingSlice';
+import { useAppSelector } from '@/lib/store/hooks';
+import { calculateOnboardingProgress, selectNativeLanguage, selectIndustry, selectSelectedRole, selectCustomRole } from '@/lib/store/slices/onboarding/onboarding.selectors';
 import OnboardingSelectionTemplate from '@/components/onboarding/OnboardingSelectionTemplate';
 import SummaryItem from '@/components/SummaryItem';
 import { data } from '@/constants';
@@ -14,9 +14,11 @@ const PartOneComplete = () => {
   const router = useRouter();
   
   // Get onboarding data from Redux store
-  const onboardingState = useAppSelector((state) => state.onboarding);
-  const { nativeLanguage, industry, selectedRole, customRole } = onboardingState;
-  const progress = calculateOnboardingProgress(onboardingState);
+  const nativeLanguage = useAppSelector(selectNativeLanguage);
+  const industry = useAppSelector(selectIndustry);
+  const selectedRole = useAppSelector(selectSelectedRole);
+  const customRole = useAppSelector(selectCustomRole);
+  const progress = useAppSelector(calculateOnboardingProgress);
 
   // Function to get language display data
   const getLanguageData = () => {

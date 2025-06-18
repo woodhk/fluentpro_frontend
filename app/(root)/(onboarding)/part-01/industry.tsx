@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { View, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useAppDispatch, useAppSelector } from '@/lib/hooks';
-import { setIndustry, updateIndustry, calculateOnboardingProgress, type Industry } from '@/lib/slices/onboardingSlice';
+import { useAppDispatch, useAppSelector } from '@/lib/store/hooks';
+import { updateIndustry } from '@/lib/store/slices/onboarding/onboarding.slice';
+import { setIndustry, type Industry } from '@/lib/store/slices/onboarding/onboarding.thunks';
+import { calculateOnboardingProgress, selectIndustry, selectIsLoading, selectError } from '@/lib/store/slices/onboarding/onboarding.selectors';
 import { industries } from '@/constants';
 import OptionBox from '@/components/OptionBox';
 import OnboardingSelectionTemplate from '@/components/onboarding/OnboardingSelectionTemplate';
@@ -11,9 +13,10 @@ import ProgressBar from '@/components/ProgressBar';
 const IndustryScreen = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const onboardingState = useAppSelector((state) => state.onboarding);
-  const { industry, isLoading, error } = onboardingState;
-  const progress = calculateOnboardingProgress(onboardingState);
+  const industry = useAppSelector(selectIndustry);
+  const isLoading = useAppSelector(selectIsLoading);
+  const error = useAppSelector(selectError);
+  const progress = useAppSelector(calculateOnboardingProgress);
   
   const [selectedIndustry, setSelectedIndustry] = useState<Industry | null>(industry);
 

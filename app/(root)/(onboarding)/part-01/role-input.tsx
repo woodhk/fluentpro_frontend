@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { View, Text } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useAppDispatch, useAppSelector } from '@/lib/hooks';
-import { updateJobTitle, updateJobDescription, searchRoles, calculateOnboardingProgress } from '@/lib/slices/onboardingSlice';
+import { useAppDispatch, useAppSelector } from '@/lib/store/hooks';
+import { updateJobTitle, updateJobDescription } from '@/lib/store/slices/onboarding/onboarding.slice';
+import { searchRoles } from '@/lib/store/slices/onboarding/onboarding.thunks';
+import { calculateOnboardingProgress, selectJobTitle, selectJobDescription, selectIsSearchingRoles, selectError } from '@/lib/store/slices/onboarding/onboarding.selectors';
 import OnboardingSelectionTemplate from '@/components/onboarding/OnboardingSelectionTemplate';
 import InputField from '@/components/InputField';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
@@ -12,9 +14,11 @@ import ProgressBar from '@/components/ProgressBar';
 const RoleInput = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const onboardingState = useAppSelector(state => state.onboarding);
-  const { jobTitle, jobDescription, isSearchingRoles, error } = onboardingState;
-  const progress = calculateOnboardingProgress(onboardingState);
+  const jobTitle = useAppSelector(selectJobTitle);
+  const jobDescription = useAppSelector(selectJobDescription);
+  const isSearchingRoles = useAppSelector(selectIsSearchingRoles);
+  const error = useAppSelector(selectError);
+  const progress = useAppSelector(calculateOnboardingProgress);
   
   // Local state for form validation
   const [titleError, setTitleError] = useState('');

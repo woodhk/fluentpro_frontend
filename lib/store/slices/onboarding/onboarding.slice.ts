@@ -1,16 +1,19 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { apiClient } from '../api';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { 
   RoleMatch, 
-  RoleSearchRequest, 
-  RoleSelectionRequest, 
-  CommunicationPartnerAPI, 
-  CommunicationPartnerSelectionRequest, 
-  SituationSelectionRequest 
+  CommunicationPartnerAPI
 } from '@/types/api/onboarding.types';
-
-export type NativeLanguage = 'english' | 'chinese_traditional' | 'chinese_simplified';
-export type Industry = 'banking_finance' | 'shipping_logistics' | 'real_estate' | 'hotels_hospitality';
+import {
+  setNativeLanguage,
+  setIndustry,
+  searchRoles,
+  selectRole,
+  fetchCommunicationPartners,
+  selectCommunicationPartners,
+  selectCommunicationSituations,
+  NativeLanguage,
+  Industry
+} from './onboarding.thunks';
 
 interface OnboardingState {
   // Part 1 data
@@ -61,96 +64,6 @@ const initialState: OnboardingState = {
   part3Complete: false,
 };
 
-// Async thunk for setting native language
-export const setNativeLanguage = createAsyncThunk(
-  'onboarding/setNativeLanguage',
-  async (language: NativeLanguage, { rejectWithValue }) => {
-    try {
-      const response = await apiClient.setNativeLanguage(language);
-      return { language, response };
-    } catch (error: any) {
-      return rejectWithValue(error.message || 'Failed to set native language');
-    }
-  }
-);
-
-// Async thunk for setting industry
-export const setIndustry = createAsyncThunk(
-  'onboarding/setIndustry',
-  async (industry: Industry, { rejectWithValue }) => {
-    try {
-      const response = await apiClient.setIndustry(industry);
-      return { industry, response };
-    } catch (error: any) {
-      return rejectWithValue(error.message || 'Failed to set industry');
-    }
-  }
-);
-
-// Async thunk for searching roles
-export const searchRoles = createAsyncThunk(
-  'onboarding/searchRoles',
-  async (searchData: RoleSearchRequest, { rejectWithValue }) => {
-    try {
-      const response = await apiClient.searchRoles(searchData);
-      return response;
-    } catch (error: any) {
-      return rejectWithValue(error.message || 'Failed to search roles');
-    }
-  }
-);
-
-// Async thunk for selecting a role
-export const selectRole = createAsyncThunk(
-  'onboarding/selectRole',
-  async (selectionData: RoleSelectionRequest, { rejectWithValue }) => {
-    try {
-      const response = await apiClient.selectRole(selectionData);
-      return response;
-    } catch (error: any) {
-      return rejectWithValue(error.message || 'Failed to select role');
-    }
-  }
-);
-
-// Async thunk for fetching available communication partners
-export const fetchCommunicationPartners = createAsyncThunk(
-  'onboarding/fetchCommunicationPartners',
-  async (_, { rejectWithValue }) => {
-    try {
-      const response = await apiClient.getCommunicationPartners();
-      return response;
-    } catch (error: any) {
-      return rejectWithValue(error.message || 'Failed to fetch communication partners');
-    }
-  }
-);
-
-// Async thunk for selecting communication partners
-export const selectCommunicationPartners = createAsyncThunk(
-  'onboarding/selectCommunicationPartners',
-  async (selectionData: CommunicationPartnerSelectionRequest, { rejectWithValue }) => {
-    try {
-      const response = await apiClient.selectCommunicationPartners(selectionData);
-      return response;
-    } catch (error: any) {
-      return rejectWithValue(error.message || 'Failed to select communication partners');
-    }
-  }
-);
-
-// Async thunk for selecting communication situations
-export const selectCommunicationSituations = createAsyncThunk(
-  'onboarding/selectCommunicationSituations',
-  async (selectionData: SituationSelectionRequest, { rejectWithValue }) => {
-    try {
-      const response = await apiClient.selectCommunicationSituations(selectionData);
-      return response;
-    } catch (error: any) {
-      return rejectWithValue(error.message || 'Failed to select communication situations');
-    }
-  }
-);
 
 const onboardingSlice = createSlice({
   name: 'onboarding',
@@ -334,44 +247,6 @@ const onboardingSlice = createSlice({
   },
 });
 
-// Helper function to calculate onboarding progress
-export const calculateOnboardingProgress = (state: OnboardingState): number => {
-  // Total steps in onboarding: 8 screens from language to summary
-  // 1. language (0.125)
-  // 2. industry (0.25) 
-  // 3. role-input (0.375)
-  // 4. role-select (0.5)
-  // 5. complete (0.625)
-  // 6. intro (0.625 - same as complete)
-  // 7. partners (0.75)
-  // 8. situations (0.875)
-  // 9. summary (1.0)
-  
-  let progress = 0;
-  
-  // Part 1 progress
-  if (state.nativeLanguage) progress = 0.125;
-  if (state.industry) progress = 0.25;
-  if (state.jobTitle && state.jobDescription) progress = 0.375;
-  if (state.roleMatches.length > 0) progress = 0.5;
-  if (state.selectedRole || state.customRole) progress = 0.625;
-  
-  // Part 2 progress
-  if (state.selectedPartners.length > 0) progress = 0.75;
-  
-  // Check if all partners have situations selected
-  const allPartnersHaveSituations = state.selectedPartners.every(
-    partnerId => state.partnerSituations[partnerId]?.length > 0
-  );
-  if (allPartnersHaveSituations && state.selectedPartners.length > 0) {
-    progress = 0.875;
-  }
-  
-  // Summary screen shows full progress
-  if (state.part2Complete) progress = 1.0;
-  
-  return progress;
-};
 
 export const { 
   updateNativeLanguage, 
