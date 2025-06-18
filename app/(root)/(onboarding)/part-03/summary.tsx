@@ -1,17 +1,19 @@
 // Screen 12
 
 import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, ScrollView, Image, Alert } from "react-native";
+import { View, Text, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { Icon } from "@/components/atoms/icons/Icon";
 import CustomButton from "@/components/atoms/CustomButton";
+import { LoadingSpinner } from "@/components/atoms/LoadingSpinner";
 import { part3SummaryData } from "@/constants";
-import { images } from "@/constants";
 import { apiClient } from "@/lib/api";
 import { OnboardingSummary } from '@/types/api/onboarding.types';
+import OnboardingSelectionTemplate from "@/components/templates/OnboardingSelectionTemplate";
+import SummaryItem from "@/components/molecules/SummaryItem";
 
-interface SummaryItem {
+interface SummaryItemData {
   title: string;
   value: string;
   icon: {
@@ -50,7 +52,7 @@ const OnboardingSummaryScreen = () => {
     fetchSummaryData();
   }, []);
 
-  const summaryItems: SummaryItem[] = [
+  const summaryItems: SummaryItemData[] = [
     {
       title: part3SummaryData.nativeLanguage.title,
       value: summaryData?.native_language_display || "English",
@@ -82,26 +84,6 @@ const OnboardingSummaryScreen = () => {
     router.push("/(root)/(onboarding)/part-03/complete");
   };
 
-  const SummaryItemComponent = ({ item, isLast }: { item: SummaryItem; isLast?: boolean }) => (
-    <View className={`flex-row items-center py-4 ${!isLast ? 'border-b border-gray-100' : ''}`}>
-      <View
-        className="w-12 h-12 rounded-full items-center justify-center mr-4"
-        style={{ backgroundColor: `${item.bgColor}20` }}
-      >
-        <Icon
-          library={item.icon.library as any}
-          name={item.icon.name as any}
-          size={24}
-          color={item.bgColor}
-        />
-      </View>
-      <View className="flex-1">
-        <Text className="text-gray-500 text-sm font-medium">{item.title}</Text>
-        <Text className="text-gray-900 text-lg font-semibold mt-1">{item.value}</Text>
-      </View>
-    </View>
-  );
-
   const retryFetch = async () => {
     try {
       setLoading(true);
@@ -125,84 +107,52 @@ const OnboardingSummaryScreen = () => {
   if (loading) {
     return (
       <SafeAreaView className="flex-1 bg-white">
-        <View className="flex-1 justify-center items-center">
-          <Text className="text-lg text-gray-500">Loading...</Text>
-        </View>
+        <LoadingSpinner message="Loading" fullScreen={true} />
       </SafeAreaView>
     );
   }
 
   if (error && !summaryData) {
     return (
-      <SafeAreaView className="flex-1 bg-white">
-        <View className="flex-1 justify-center items-center px-6">
+      <OnboardingSelectionTemplate
+        title="Unable to Load Summary"
+        description="There was an issue loading your onboarding summary"
+        onContinue={retryFetch}
+        continueButtonText="Try Again"
+        error={error}
+      >
+        <View className="justify-center items-center py-20">
           <Icon library="ionicons" name="alert-circle" size={48} color="#EF4444" />
-          <Text className="text-lg text-gray-900 font-semibold text-center mt-4 mb-2">
-            Unable to Load Summary
-          </Text>
-          <Text className="text-gray-600 text-center mb-6">
-            {error}
-          </Text>
-          <CustomButton
-            title="Try Again"
-            onPress={retryFetch}
-            bgVariant="primary"
-            className="w-full max-w-xs"
-          />
         </View>
-      </SafeAreaView>
+      </OnboardingSelectionTemplate>
     );
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
-      <ScrollView className="flex-1 px-6">
-        {/* Header */}
-        <View className="items-center pt-8 pb-6">
-          <TouchableOpacity
-            onPress={() => router.back()}
-            className="absolute left-0 top-8 w-10 h-10 items-center justify-center"
-          >
-            <Icon library="ionicons" name="chevron-back" size={24} color="#374151" />
-          </TouchableOpacity>
-        </View>
-
-        {/* Success Icon */}
-        <View className="items-center mb-8">
-          <View className="w-24 h-24 bg-green-100 rounded-full items-center justify-center mb-6">
-            <Icon library="ionicons" name="checkmark" size={48} color="#10B981" />
-          </View>
-          
-          <Text className="text-2xl font-bold text-gray-900 text-center mb-2">
-            Onboarding Complete!
-          </Text>
-          <Text className="text-gray-600 text-center">
-            Your personalised experience set up is complete
-          </Text>
-        </View>
-
+    <OnboardingSelectionTemplate
+      title="Onboarding Complete!"
+      description="Your personalised experience set up is complete"
+      onContinue={handleCompleteOnboarding}
+      continueButtonText="Complete Onboarding"
+      error={error}
+      headerContent={false}
+    >
+      <View className="space-y-6">
         {/* Summary Items */}
-        <View className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-8">
+        <View className="bg-white rounded-2xl shadow-sm border border-gray-100">
           {summaryItems.map((item, index) => (
-            <SummaryItemComponent
+            <SummaryItem
               key={index}
-              item={item}
+              title={item.title}
+              description={item.value}
+              icon={item.icon}
+              bgColor={item.bgColor}
               isLast={index === summaryItems.length - 1}
             />
           ))}
         </View>
-
-        {/* Complete Button */}
-        <View className="pb-8">
-          <CustomButton
-            title="Complete Onboarding"
-            onPress={handleCompleteOnboarding}
-            bgVariant="primary"
-            className="w-full"
-          />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+      </View>
+    </OnboardingSelectionTemplate>
   );
 };
 
