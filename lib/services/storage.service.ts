@@ -1,7 +1,7 @@
 // lib/storage.ts
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as SecureStore from 'expo-secure-store';
-import { User } from './types';
+import { User } from '@/types/models/user.types';
 
 const STORAGE_KEYS = {
   AUTH_TOKEN: 'fluentpro_auth_token', // For SecureStore (no @ prefix needed)

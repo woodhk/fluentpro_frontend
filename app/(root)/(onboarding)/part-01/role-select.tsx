@@ -7,7 +7,7 @@ import { selectRole } from '@/lib/store/slices/onboarding/onboarding.thunks';
 import { calculateOnboardingProgress, selectRoleMatches, selectSelectedRole, selectCustomRole, selectJobTitle, selectJobDescription, selectIsLoading, selectError } from '@/lib/store/slices/onboarding/onboarding.selectors';
 import OnboardingSelectionTemplate from '@/components/onboarding/OnboardingSelectionTemplate';
 import RoleSelectionBox from '@/components/RoleSelectionBox';
-import { RoleMatch, RoleSelectionRequest } from '@/lib/types';
+import { RoleMatch, RoleSelectionRequest } from '@/types/api/onboarding.types';
 import ProgressBar from '@/components/ProgressBar';
 
 const RoleSelection = () => {
