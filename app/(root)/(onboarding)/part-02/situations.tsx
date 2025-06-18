@@ -1,16 +1,16 @@
 // Screen 10 - Communication Situations Selection
 
-import React, { useEffect, useMemo } from 'react';
-import { View, Text } from 'react-native';
-import { useRouter } from 'expo-router';
 import OnboardingSelectionTemplate from '@/components/onboarding/OnboardingSelectionTemplate';
-import SituationCheckbox from '@/components/SituationCheckbox';
-import { useAppDispatch, useAppSelector } from '@/lib/store/hooks';
-import { toggleSituationSelection, updateCurrentPartnerIndex, clearError } from '@/lib/store/slices/onboarding/onboarding.slice';
-import { selectCommunicationSituations } from '@/lib/store/slices/onboarding/onboarding.thunks';
-import { calculateOnboardingProgress, selectSelectedPartners, selectCurrentPartnerIndex, selectPartnerSituations, selectIsLoading, selectError } from '@/lib/store/slices/onboarding/onboarding.selectors';
-import { communicationSituations, communicationPartners } from '@/constants';
 import ProgressBar from '@/components/ProgressBar';
+import SelectableOption from '@/components/RectangleCheckbox';
+import { communicationPartners, communicationSituations } from '@/constants';
+import { useAppDispatch, useAppSelector } from '@/lib/store/hooks';
+import { calculateOnboardingProgress, selectCurrentPartnerIndex, selectError, selectIsLoading, selectPartnerSituations, selectSelectedPartners } from '@/lib/store/slices/onboarding/onboarding.selectors';
+import { clearError, toggleSituationSelection, updateCurrentPartnerIndex } from '@/lib/store/slices/onboarding/onboarding.slice';
+import { selectCommunicationSituations } from '@/lib/store/slices/onboarding/onboarding.thunks';
+import { useRouter } from 'expo-router';
+import React, { useEffect } from 'react';
+import { Text, View } from 'react-native';
 
 const Situations = () => {
   const router = useRouter();
@@ -120,13 +120,14 @@ const Situations = () => {
         {/* Situations grid */}
         <View className="flex-1">
           {communicationSituations.map((situation) => (
-            <SituationCheckbox
+            <SelectableOption
               key={situation.id}
               id={situation.id}
               name={situation.name}
               icon={situation.icon}
               isSelected={currentSituations.includes(situation.id)}
               onSelect={handleSituationSelect}
+              variant="checkbox"
             />
           ))}
         </View>

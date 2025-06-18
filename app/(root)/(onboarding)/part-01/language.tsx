@@ -8,7 +8,7 @@ import { updateNativeLanguage } from '@/lib/store/slices/onboarding/onboarding.s
 import { setNativeLanguage, type NativeLanguage } from '@/lib/store/slices/onboarding/onboarding.thunks';
 import { calculateOnboardingProgress, selectNativeLanguage, selectIsLoading, selectError } from '@/lib/store/slices/onboarding/onboarding.selectors';
 import { nativeLanguages } from '@/constants';
-import LanguageCheckbox from '@/components/LanguageCheckbox';
+import LanguageCheckbox from '@/components/SquareCheckbox';
 import OnboardingSelectionTemplate from '@/components/onboarding/OnboardingSelectionTemplate';
 import ProgressBar from '@/components/ProgressBar';
 

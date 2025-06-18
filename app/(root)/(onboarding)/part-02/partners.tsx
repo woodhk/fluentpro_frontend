@@ -1,16 +1,16 @@
 // Screen 9 - Communication Partners Selection
 
-import React, { useEffect } from 'react';
-import { View, Text } from 'react-native';
-import { useRouter } from 'expo-router';
 import OnboardingSelectionTemplate from '@/components/onboarding/OnboardingSelectionTemplate';
-import CommunicationPartnerCheckbox from '@/components/CommunicationPartnerCheckbox';
-import { useAppDispatch, useAppSelector } from '@/lib/store/hooks';
-import { togglePartnerSelection, clearError } from '@/lib/store/slices/onboarding/onboarding.slice';
-import { selectCommunicationPartners } from '@/lib/store/slices/onboarding/onboarding.thunks';
-import { calculateOnboardingProgress, selectSelectedPartners, selectIsLoading, selectError } from '@/lib/store/slices/onboarding/onboarding.selectors';
-import { communicationPartners } from '@/constants';
 import ProgressBar from '@/components/ProgressBar';
+import SelectableOption from '@/components/RectangleCheckbox';
+import { communicationPartners } from '@/constants';
+import { useAppDispatch, useAppSelector } from '@/lib/store/hooks';
+import { calculateOnboardingProgress, selectError, selectIsLoading, selectSelectedPartners } from '@/lib/store/slices/onboarding/onboarding.selectors';
+import { clearError, togglePartnerSelection } from '@/lib/store/slices/onboarding/onboarding.slice';
+import { selectCommunicationPartners } from '@/lib/store/slices/onboarding/onboarding.thunks';
+import { useRouter } from 'expo-router';
+import React, { useEffect } from 'react';
+import { Text, View } from 'react-native';
 
 const Partners = () => {
   const router = useRouter();
@@ -68,7 +68,7 @@ const Partners = () => {
         {/* Partners grid */}
         <View className="flex-1">
           {communicationPartners.map((partner) => (
-            <CommunicationPartnerCheckbox
+            <SelectableOption
               key={partner.id}
               id={partner.id}
               name={partner.name}
@@ -76,6 +76,7 @@ const Partners = () => {
               icon={partner.icon}
               isSelected={selectedPartners.includes(partner.id)}
               onSelect={handlePartnerSelect}
+              variant="checkbox"
             />
           ))}
         </View>

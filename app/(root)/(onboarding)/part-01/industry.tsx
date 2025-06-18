@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
-import { View, Alert } from 'react-native';
-import { useRouter } from 'expo-router';
-import { useAppDispatch, useAppSelector } from '@/lib/store/hooks';
-import { updateIndustry } from '@/lib/store/slices/onboarding/onboarding.slice';
-import { setIndustry, type Industry } from '@/lib/store/slices/onboarding/onboarding.thunks';
-import { calculateOnboardingProgress, selectIndustry, selectIsLoading, selectError } from '@/lib/store/slices/onboarding/onboarding.selectors';
-import { industries } from '@/constants';
-import OptionBox from '@/components/OptionBox';
 import OnboardingSelectionTemplate from '@/components/onboarding/OnboardingSelectionTemplate';
 import ProgressBar from '@/components/ProgressBar';
+import SelectableOption from '@/components/RectangleCheckbox';
+import { industries } from '@/constants';
+import { useAppDispatch, useAppSelector } from '@/lib/store/hooks';
+import { calculateOnboardingProgress, selectError, selectIndustry, selectIsLoading } from '@/lib/store/slices/onboarding/onboarding.selectors';
+import { updateIndustry } from '@/lib/store/slices/onboarding/onboarding.slice';
+import { setIndustry, type Industry } from '@/lib/store/slices/onboarding/onboarding.thunks';
+import { useRouter } from 'expo-router';
+import React, { useState } from 'react';
+import { Alert, View } from 'react-native';
 
 const IndustryScreen = () => {
   const router = useRouter();
@@ -54,13 +54,14 @@ const IndustryScreen = () => {
       <View>
         {industries.map((industryOption, index) => (
           <View key={industryOption.id} className={index < industries.length - 1 ? "mb-4" : ""}>
-            <OptionBox
+            <SelectableOption
               id={industryOption.id}
               name={industryOption.name}
               icon={industryOption.icon}
               isSelected={selectedIndustry === industryOption.id}
               available={industryOption.available}
               onSelect={handleIndustrySelect}
+              variant="simple"
             />
           </View>
         ))}
