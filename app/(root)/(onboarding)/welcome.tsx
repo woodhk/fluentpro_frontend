@@ -10,7 +10,8 @@ const Welcome = () => {
   return (
     <OnboardingTemplate
       title="Welcome 👋"
-      subtitle="We're excited to have you here. Let's get started with a quick setup"
+      subtitle="Let's get started with a quick setup."
+      secondParagraph="This will help us to build the best study plan for you!"
       illustration={require('@/assets/images/onboarding1.png')}
       primaryButtonText="Continue"
       onPrimaryPress={() => router.push('/(root)/(onboarding)/part-01/intro')}

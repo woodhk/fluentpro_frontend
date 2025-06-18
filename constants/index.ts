@@ -183,40 +183,6 @@ export const industries = [
   },
 ];
 
-// Role options for onboarding
-export const roles = [
-  {
-    id: 'business_analyst',
-    title: 'Business Analyst',
-    description: 'Analyze business processes and requirements',
-    industry_name: 'Banking & Finance',
-    icon: {
-      library: 'ionicons' as const,
-      name: 'analytics-outline' as const,
-    },
-  },
-  {
-    id: 'project_manager',
-    title: 'Project Manager',
-    description: 'Lead and coordinate project activities',
-    industry_name: 'Banking & Finance',
-    icon: {
-      library: 'ionicons' as const,
-      name: 'people-outline' as const,
-    },
-  },
-  {
-    id: 'sales_representative',
-    title: 'Sales Representative',
-    description: 'Drive sales and client relationships',
-    industry_name: 'Real Estate',
-    icon: {
-      library: 'ionicons' as const,
-      name: 'trending-up-outline' as const,
-    },
-  },
-];
-
 // Summary data for completion screen
 export const summaryData = {
   nativeLanguage: {
@@ -543,7 +509,6 @@ export const data = {
     welcome,
     nativeLanguages,
     industries,
-    roles,
     summaryData,
     part2SummaryData,
     part3SummaryData,
