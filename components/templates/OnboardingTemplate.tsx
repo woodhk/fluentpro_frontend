@@ -18,6 +18,7 @@ interface OnboardingTemplateProps {
   showBackButton?: boolean;
   progress?: number; // Value between 0 and 1
   headerContent?: React.ReactNode; // For progress bar or other header content
+  additionalContent?: React.ReactNode; // For additional content like sign out button
 }
 
 const OnboardingTemplate: React.FC<OnboardingTemplateProps> = ({
@@ -32,6 +33,7 @@ const OnboardingTemplate: React.FC<OnboardingTemplateProps> = ({
   showBackButton = true,
   progress = 0,
   headerContent,
+  additionalContent,
 }) => {
   const router = useRouter();
 
@@ -55,6 +57,13 @@ const OnboardingTemplate: React.FC<OnboardingTemplateProps> = ({
           <View className="flex-1 mx-4">
             {headerContent}
           </View>
+          
+          {/* Additional content like sign out button */}
+          {additionalContent && (
+            <View>
+              {additionalContent}
+            </View>
+          )}
         </View>
 
         {/* Content */}

@@ -3,6 +3,7 @@
 import React from 'react';
 import { useRouter } from 'expo-router';
 import OnboardingTemplate from '@/components/templates/OnboardingTemplate';
+import { SignOutButton } from '@/components/molecules/SignOutButton';
 
 const Welcome = () => {
   const router = useRouter();
@@ -17,6 +18,7 @@ const Welcome = () => {
       onPrimaryPress={() => router.push('/(root)/(onboarding)/part-01/intro')}
       showBackButton={false}
       progress={0.1}
+      additionalContent={<SignOutButton />}
     />
   );
 };
