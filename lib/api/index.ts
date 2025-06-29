@@ -4,25 +4,16 @@
  */
 
 // Export individual API modules
-export { authApi } from './auth.api';
 export { onboardingApi } from './onboarding.api';
 
 // Import for backwards compatible apiClient
-import { authApi } from './auth.api';
 import { onboardingApi } from './onboarding.api';
 
 /**
  * Backwards compatible apiClient
  * This allows existing code to work without changes
  */
-export const apiClient = {
-  // Auth methods
-  signUp: authApi.signUp.bind(authApi),
-  signIn: authApi.signIn.bind(authApi),
-  getAuthStatus: authApi.getAuthStatus.bind(authApi),
-  getCurrentUser: authApi.getCurrentUser.bind(authApi),
-  verifyToken: authApi.verifyToken.bind(authApi),
-  
+export const apiClient = {  
   // Onboarding methods
   setNativeLanguage: onboardingApi.setNativeLanguage.bind(onboardingApi),
   setIndustry: onboardingApi.setIndustry.bind(onboardingApi),

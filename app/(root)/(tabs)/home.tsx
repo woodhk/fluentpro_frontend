@@ -3,59 +3,34 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
+import { useAuth, useUser } from '@clerk/clerk-expo';
 import { Ionicons } from '@expo/vector-icons';
 import { LoadingButton } from '@/components/molecules/LoadingButton';
 import { LoadingSpinner } from '@/components/atoms/LoadingSpinner';
-import { authService } from '@/lib/services/auth.service';
-import { User } from '@/types/models/user.types';
 
 export default function HomeScreen() {
   const router = useRouter();
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { signOut, isLoaded: authLoaded } = useAuth();
+  const { user, isLoaded: userLoaded } = useUser();
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    loadUserData();
-  }, []);
+  const isFullyLoaded = authLoaded && userLoaded;
 
-  const loadUserData = async () => {
+  const handleSignOut = async () => {
     try {
-      const authState = await authService.getAuthState();
-      if (authState.user) {
-        setUser(authState.user);
-      } else {
-        // Try to refresh user data from backend
-        const refreshedUser = await authService.refreshUserData();
-        if (refreshedUser) {
-          setUser(refreshedUser);
-        } else {
-          // If we can't get user data, sign out
-          await authService.signOut();
-          router.replace('/(auth)/sign-in');
-        }
-      }
+      setLoading(true);
+      await signOut();
+      router.replace('/(auth)/welcome');
     } catch (error) {
-      console.error('Failed to load user data:', error);
-      // If loading fails, sign out for security
-      await authService.signOut();
-      router.replace('/(auth)/sign-in');
+      console.error('Sign out error:', error);
+      // Force navigation even if sign out fails
+      router.replace('/(auth)/welcome');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleSignOut = async () => {
-    try {
-      await authService.signOut();
-      router.replace('/(auth)/sign-in');
-    } catch (error) {
-      console.error('Sign out error:', error);
-      // Force navigation even if sign out fails
-      router.replace('/(auth)/sign-in');
-    }
-  };
-
-  if (loading) {
+  if (!isFullyLoaded || loading) {
     return (
       <SafeAreaView className="flex-1 bg-white">
         <LoadingSpinner message="Loading your dashboard..." fullScreen />
@@ -70,7 +45,7 @@ export default function HomeScreen() {
         <View className="flex-row justify-between items-center px-6 py-4 border-b border-light-300">
           <View className="flex-1">
             <Text className="text-2xl font-bold text-text-primary">
-              Hello, {user?.full_name || 'User'}! 👋
+              Hello, {user?.fullName || user?.firstName || 'User'}! 👋
             </Text>
             <Text className="text-text-secondary mt-1">
               Welcome to your FluentPro dashboard
@@ -112,26 +87,26 @@ export default function HomeScreen() {
               <View className="flex-row items-center">
                 <Ionicons name="person-outline" size={20} color="#666666" />
                 <Text className="text-text-secondary ml-3 flex-1">
-                  {user?.full_name || 'Not provided'}
+                  {user?.fullName || `${user?.firstName || ''} ${user?.lastName || ''}`.trim() || 'Not provided'}
                 </Text>
               </View>
               
               <View className="flex-row items-center">
                 <Ionicons name="mail-outline" size={20} color="#666666" />
                 <Text className="text-text-secondary ml-3 flex-1">
-                  {user?.email || 'Not provided'}
+                  {user?.primaryEmailAddress?.emailAddress || 'Not provided'}
                 </Text>
               </View>
               
               
               <View className="flex-row items-center">
                 <Ionicons 
-                  name={user?.is_active ? "checkmark-circle-outline" : "close-circle-outline"} 
+                  name="checkmark-circle-outline"
                   size={20} 
-                  color={user?.is_active ? "#34C759" : "#FF3B30"}
+                  color="#34C759"
                 />
-                <Text className={`ml-3 flex-1 ${user?.is_active ? 'text-functional-success' : 'text-functional-error'}`}>
-                  {user?.is_active ? 'Account Active' : 'Account Inactive'}
+                <Text className="ml-3 flex-1 text-functional-success">
+                  Account Active
                 </Text>
               </View>
             </View>

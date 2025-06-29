@@ -1,5 +1,5 @@
 // app/(auth)/sign-in.tsx
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import {
   View,
   Text,
@@ -8,19 +8,21 @@ import {
   TextInput,
   TouchableOpacity,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useFocusEffect } from 'expo-router';
+import { useSignIn } from '@clerk/clerk-expo';
 import InputField from '@/components/atoms/InputField';
 import CustomButton from '@/components/atoms/CustomButton';
 import { icons, images } from '@/constants';
-import { authService } from '@/lib/services/auth.service';
 import { validateSignInForm, hasValidationErrors } from '@/utils/validation';
 import { ValidationErrors } from '@/types/api/auth.types';
 import { onboardingApi } from '@/lib/api/onboarding.api';
+import { STORAGE_KEYS } from '@/constants/config';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function SignInScreen() {
   const router = useRouter();
   const passwordRef = useRef<TextInput>(null);
+  const { signIn, setActive, isLoaded } = useSignIn();
 
   // Form state
   const [form, setForm] = useState({
@@ -75,6 +77,8 @@ export default function SignInScreen() {
   };
 
   const onSignInPress = async () => {
+    if (!isLoaded) return;
+    
     try {
       setLoading(true);
       setGeneralError('');
@@ -90,61 +94,63 @@ export default function SignInScreen() {
       // Clear any previous errors
       setErrors({});
 
-      // Attempt sign in with real backend
-      const result = await authService.signIn({
-        email: form.email.trim(),
+      // Attempt sign in with Clerk
+      const completeSignIn = await signIn.create({
+        identifier: form.email.trim(),
         password: form.password,
       });
 
-      if (result.success) {
-        // Check onboarding status from backend
-        try {
-          const onboardingStatus = await onboardingApi.getOnboardingStatus();
+      // Set the session active
+      await setActive({ session: completeSignIn.createdSessionId });
+
+      // Check onboarding status from backend
+      try {
+        const onboardingStatus = await onboardingApi.getOnboardingStatus();
+        
+        if (onboardingStatus.completed) {
+          // Onboarding complete, go to home
+          router.replace('/(root)/(tabs)/home');
+        } else {
+          // Onboarding not complete, go to welcome page
+          const incompleteSteps = [
+            'not_started',
+            'native_language', 
+            'industry_selection',
+            'role_input',
+            'role_select',
+            'communication_partners',
+            'situation_selection',
+            'summary'
+          ];
           
-          if (onboardingStatus.completed) {
-            // Onboarding complete, go to home
-            router.replace('/(root)/(tabs)/home');
+          if (incompleteSteps.includes(onboardingStatus.current_step)) {
+            router.replace('/(root)/(onboarding)/welcome');
           } else {
-            // Onboarding not complete, go to welcome page
-            const incompleteSteps = [
-              'not_started',
-              'native_language', 
-              'industry_selection',
-              'role_input',
-              'role_select',
-              'communication_partners',
-              'situation_selection',
-              'summary'
-            ];
-            
-            if (incompleteSteps.includes(onboardingStatus.current_step)) {
-              router.replace('/(root)/(onboarding)/welcome');
-            } else {
-              // Unknown step, redirect to welcome as fallback
-              router.replace('/(root)/(onboarding)/welcome');
-            }
+            // Unknown step, redirect to welcome as fallback
+            router.replace('/(root)/(onboarding)/welcome');
           }
-        } catch (onboardingError) {
-          console.error('Failed to check onboarding status:', onboardingError);
-          // On error, default to welcome page
-          router.replace('/(root)/(onboarding)/welcome');
         }
+      } catch (onboardingError) {
+        console.error('Failed to check onboarding status:', onboardingError);
+        // On error, default to welcome page
+        router.replace('/(root)/(onboarding)/welcome');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Sign in error:', error);
       
-      // Handle different types of errors
-      if (error instanceof Error) {
+      // Handle Clerk-specific errors
+      if (error.errors && error.errors.length > 0) {
+        const clerkError = error.errors[0];
+        if (clerkError.code === 'form_identifier_not_found' || clerkError.code === 'form_password_incorrect') {
+          setGeneralError('Invalid email or password. Please check your credentials and try again.');
+        } else {
+          setGeneralError(clerkError.message || 'Sign in failed. Please try again.');
+        }
+      } else if (error instanceof Error) {
         const errorMessage = error.message;
         
-        // Check for specific error types
-        if (errorMessage.toLowerCase().includes('email') || 
-            errorMessage.toLowerCase().includes('password') ||
-            errorMessage.toLowerCase().includes('invalid') ||
-            errorMessage.toLowerCase().includes('incorrect')) {
-          setGeneralError('Invalid email or password. Please check your credentials and try again.');
-        } else if (errorMessage.toLowerCase().includes('network') ||
-                   errorMessage.toLowerCase().includes('connection')) {
+        if (errorMessage.toLowerCase().includes('network') ||
+           errorMessage.toLowerCase().includes('connection')) {
           setGeneralError('Unable to connect to the server. Please check your internet connection and try again.');
         } else {
           setGeneralError(errorMessage);
@@ -221,7 +227,7 @@ export default function SignInScreen() {
             title={loading ? "Signing In..." : "Sign In"}
             onPress={onSignInPress}
             className="mt-6"
-            disabled={loading}
+            disabled={loading || !isLoaded}
           />
 
           {/* Forgot Password Link */}

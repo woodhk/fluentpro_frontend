@@ -1,17 +1,15 @@
 /**
- * Base API client with common request handling
+ * Clerk-based API client with session token handling
  */
 
 import { API_CONFIG } from '@/constants/config';
 import { ApiError } from '@/types/api/common.types';
 
-const API_BASE_URL = API_CONFIG.BASE_URL;
-
-export class BaseApiClient {
+export class ClerkApiClient {
   protected baseURL: string;
   private getToken: (() => Promise<string | null>) | null = null;
 
-  constructor(baseURL: string = API_BASE_URL) {
+  constructor(baseURL: string = API_CONFIG.BASE_URL) {
     this.baseURL = baseURL;
   }
 
@@ -96,3 +94,6 @@ export class BaseApiClient {
     }
   }
 }
+
+// Create a singleton instance
+export const clerkApiClient = new ClerkApiClient();

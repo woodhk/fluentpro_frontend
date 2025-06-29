@@ -3,7 +3,10 @@ import React from 'react';
 import { Stack } from "expo-router";
 import { useFonts } from 'expo-font';
 import { Provider } from 'react-redux';
+import { ClerkProvider } from '@clerk/clerk-expo';
+import { tokenCache } from '@clerk/clerk-expo/token-cache';
 import { store } from '@/lib/store';
+import { CLERK_CONFIG } from '@/constants/config';
 import './globals.css';
 
 export default function RootLayout() {
@@ -22,12 +25,17 @@ export default function RootLayout() {
   }
 
   return (
-    <Provider store={store}>
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="index" />
-        <Stack.Screen name="(auth)" />
-        <Stack.Screen name="(root)" />
-      </Stack>
-    </Provider>
+    <ClerkProvider 
+      publishableKey={CLERK_CONFIG.PUBLISHABLE_KEY}
+      tokenCache={tokenCache}
+    >
+      <Provider store={store}>
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="index" />
+          <Stack.Screen name="(auth)" />
+          <Stack.Screen name="(root)" />
+        </Stack>
+      </Provider>
+    </ClerkProvider>
   );
 }

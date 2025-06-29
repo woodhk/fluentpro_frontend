@@ -4,8 +4,8 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'expo-router';
+import { useAuth } from '@clerk/clerk-expo';
 import { onboardingApi } from '@/lib/api/onboarding.api';
-import { authService } from '@/lib/services/auth.service';
 
 type OnboardingRedirectState = {
   loading: boolean;
@@ -14,28 +14,25 @@ type OnboardingRedirectState = {
 
 export const useOnboardingRedirect = () => {
   const router = useRouter();
+  const { isSignedIn, isLoaded } = useAuth();
   const [state, setState] = useState<OnboardingRedirectState>({
     loading: true,
     error: null,
   });
 
   useEffect(() => {
-    checkOnboardingStatus();
-  }, []);
+    if (isLoaded) {
+      checkOnboardingStatus();
+    }
+  }, [isLoaded, isSignedIn]);
 
   const checkOnboardingStatus = async () => {
     try {
       setState({ loading: true, error: null });
 
-      // Get current authentication state from cache
-      const authState = await authService.getAuthState();
-      
-      if (authState.isSignedIn && authState.user && authState.token) {
-        // User has cached auth, validate session with backend
-        const isSessionValid = await authService.validateSession();
-        
-        if (isSessionValid) {
-          // Session is valid, check onboarding status
+      if (isSignedIn) {
+        // User is authenticated with Clerk, check onboarding status
+        try {
           const onboardingStatus = await onboardingApi.getOnboardingStatus();
 
           if (onboardingStatus.completed) {
@@ -61,12 +58,13 @@ export const useOnboardingRedirect = () => {
               router.replace('/(root)/(onboarding)/welcome');
             }
           }
-        } else {
-          // Session is invalid, redirect to welcome screen
-          router.replace('/(auth)/welcome');
+        } catch (onboardingError) {
+          console.error('Failed to check onboarding status:', onboardingError);
+          // On error, default to onboarding welcome
+          router.replace('/(root)/(onboarding)/welcome');
         }
       } else {
-        // No cached user, redirect to welcome screen
+        // Not authenticated, redirect to welcome screen
         router.replace('/(auth)/welcome');
       }
 

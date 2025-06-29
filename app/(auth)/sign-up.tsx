@@ -9,15 +9,16 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { useRouter, useFocusEffect } from 'expo-router';
+import { useSignUp } from '@clerk/clerk-expo';
 import InputField from '@/components/atoms/InputField';
 import CustomButton from '@/components/atoms/CustomButton';
 import { icons, images } from '@/constants';
-import { authService } from '@/lib/services/auth.service';
 import { validateSignUpForm, hasValidationErrors } from '@/utils/validation';
 import { ValidationErrors } from '@/types/api/auth.types';
 
 export default function SignUpScreen() {
   const router = useRouter();
+  const { signUp, setActive, isLoaded } = useSignUp();
   
   // Refs for form navigation
   const emailRef = useRef<TextInput>(null);
@@ -83,6 +84,8 @@ export default function SignUpScreen() {
   };
 
   const onSignUpPress = async () => {
+    if (!isLoaded) return;
+    
     try {
       setLoading(true);
       setGeneralError('');
@@ -103,33 +106,37 @@ export default function SignUpScreen() {
       // Clear any previous errors
       setErrors({});
 
-      // Prepare signup data
-      const signUpData = {
-        email: form.email.trim(),
+      // Attempt sign up with Clerk
+      const result = await signUp.create({
+        emailAddress: form.email.trim(),
         password: form.password,
-        full_name: form.name.trim(),
-      };
+      });
 
-      // Attempt sign up
-      const result = await authService.signUp(signUpData);
-
-      if (result.success) {
-        // Navigate to onboarding flow for new users
-        router.replace('/(root)/(onboarding)');
-      }
-    } catch (error) {
+      // Send verification email
+      await result.prepareEmailAddressVerification({ strategy: 'email_code' });
+      
+      // Set session active immediately (skip email verification for now)
+      await setActive({ session: result.createdSessionId });
+      
+      // Navigate to onboarding flow for new users
+      router.replace('/(root)/(onboarding)');
+    } catch (error: any) {
       console.error('Sign up error:', error);
       
-      // Handle different types of errors
-      if (error instanceof Error) {
-        // Check for specific backend errors
-        if (error.message.includes('email')) {
-          setErrors({ email: 'Email already exists or is invalid' });
-        } else if (error.message.includes('password')) {
-          setErrors({ password: 'Password does not meet requirements' });
+      // Handle Clerk-specific errors
+      if (error.errors && error.errors.length > 0) {
+        const clerkError = error.errors[0];
+        if (clerkError.code === 'form_identifier_exists') {
+          setErrors({ email: 'Email already exists. Please use a different email or sign in.' });
+        } else if (clerkError.code === 'form_password_pwned') {
+          setErrors({ password: 'Password is too common. Please choose a more secure password.' });
+        } else if (clerkError.code === 'form_password_length_too_short') {
+          setErrors({ password: 'Password must be at least 8 characters long.' });
         } else {
-          setGeneralError(error.message);
+          setGeneralError(clerkError.message || 'Sign up failed. Please try again.');
         }
+      } else if (error instanceof Error) {
+        setGeneralError(error.message);
       } else {
         setGeneralError('Sign up failed. Please try again.');
       }
@@ -259,7 +266,7 @@ export default function SignUpScreen() {
             title={loading ? "Creating Account..." : "Sign Up"}
             onPress={onSignUpPress}
             className="mt-6"
-            disabled={loading}
+            disabled={loading || !isLoaded}
           />
 
           {/* Terms and Privacy */}
