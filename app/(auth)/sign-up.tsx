@@ -115,11 +115,8 @@ export default function SignUpScreen() {
       // Send verification email
       await result.prepareEmailAddressVerification({ strategy: 'email_code' });
       
-      // Set session active immediately (skip email verification for now)
-      await setActive({ session: result.createdSessionId });
-      
-      // Navigate to onboarding flow for new users
-      router.replace('/(root)/(onboarding)');
+      // Navigate to email verification screen
+      router.replace('/(auth)/verify-email');
     } catch (error: any) {
       console.error('Sign up error:', error);
       

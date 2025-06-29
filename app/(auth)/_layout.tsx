@@ -29,6 +29,12 @@ export default function AuthLayout() {
           title: 'Welcome',
         }}
       />
+      <Stack.Screen 
+        name="verify-email"
+        options={{
+          title: 'Verify Email',
+        }}
+      />
     </Stack>
   );
 }
